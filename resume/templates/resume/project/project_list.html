@@ -1,0 +1,39 @@
+{% extends 'adminlte/base.html' %}
+{% block title %}Applied{% endblock %}
+
+	{% if project_list %}
+		{% block content %}
+		<div class="p-3 mb-2 text-dark">
+		<table class="table" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;">
+			  <thead>
+			    <tr>
+			      <th scope="col">#</th>
+			      <th scope="col">Description</th>
+			      <th scope="col">Actions</th>
+			    </tr>
+			</thead>
+        	<tbody>
+			{% for p in project_list %}
+			        <tr>
+			        	<th scope="row"> {{ forloop.counter }} </th>
+			        	<td>{{ p.description }}</td>
+			        	<td>
+							<a href="/resume/project/edit/{{p.id}}"><button type="button" class="btn btn-primary">Edit</button></a>
+        <button data-toggle="modal" data-target="#modal-delete-project-{{ p.id }}" type="button" class="btn btn-danger ">Delete</button>
+						 </td>
+					</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<div id="content" class="colM">	
+		<div id="content-main">
+			<a href="/resume/project/new"><button class="btn btn-primary">Create New Project</button></a>
+		</div>
+	</div>
+</div>
+		{% for p in project_list %}
+  {% include 'resume/project/project_delete.html' %}
+{% endfor %}
+		{% endblock %}
+	{% endif %}
+

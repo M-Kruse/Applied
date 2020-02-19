@@ -1,0 +1,166 @@
+{% extends 'adminlte/base.html' %}
+{% block title %}Applied{% endblock %}
+
+	{% if employment_list %}
+		{% block content %}
+  
+<body style="background-color:#FFFFFF;">
+    <div style="background-color:#FFFFFF;">
+        <!--[if mso | IE]>      <table         align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:600px;" width="600"      >        <tr>          <td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;">      <![endif]-->
+        <div style="Margin:0px auto;max-width:600px;">
+            <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td style="direction:ltr;font-size:0px;padding:9px 0px 9px 0px;text-align:center;vertical-align:top;">
+                            <!--[if mso | IE]>                  <table role="presentation" border="0" cellpadding="0" cellspacing="0">                        <tr>                  <td               class="" style="vertical-align:top;width:600px;"            >          <![endif]-->
+                            <div class="mj-column-per-100 outlook-group-fix" style="font-size:13px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                                <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+                                    <tbody>
+                                        <tr>
+                                            <td align="center" style="font-size:0px;padding:15px 15px 15px 15px;word-break:break-word;">
+                                                <div style="font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:11px;line-height:1.5;text-align:center;color:#000000;">
+                                                    <p>{{ applicant.name }}</p>
+                                                    <p>{{ applicant.email }}</p>
+                                                    <p>{{ applicant.phone }}</p>
+                                                </div>
+                                            </td>
+                        				</tr>
+									<tr>
+										<td align="left" style="font-size:0px;padding:15px 15px 15px 15px;word-break:break-word;">
+											<div style="font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:11px;line-height:1.5;text-align:left;color:#000000;">
+        										<p><strong>Employment History:</strong></p>
+        									</div>
+        								</td>
+        							</tr>
+        							<tr><tr>
+        						{% for employment in employment_list %}
+								  	<td align="left" style="font-size:0px;padding:15px 15px 15px 15px;word-break:break-word;">
+								  		<div style="font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:11px;line-height:1.5;text-align:left;color:#000000;">
+								        	<p>
+								        		<strong>{{ employment.company_name }}&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;{{ employment.start_date }} -> {{ employment.end_date }} 
+								        		</strong>
+								        	</p>
+									<p><em>{{ employment.job_title}}</em></p>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td align="left" style="font-size:0px;padding:15px 15px 15px 15px;word-break:break-word;">
+                            	<div style="font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:11px;line-height:1.5;text-align:left;color:#000000;">
+                                    <p><strong>Duties:</strong></p>
+                                    <ul>
+                                      {% if employment.duties %}
+                                        {% for i in employment.duties.all %}
+										                      <li>{{i}}</li>
+									                      {% endfor %}
+                                      {% endif %}
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                        	<td align="left" style="font-size:0px;padding:15px 15px 15px 15px;word-break:break-word;">
+                                <div style="font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:11px;line-height:1.5;text-align:left;color:#000000;">
+                                <p><strong>Projects:</strong></p>
+                                <ul>
+                                	{% for i in employment.projects.all %}
+									                 	<li>{{i}}</li>
+									                 {% endfor %}
+                               	</ul>
+                               	</div>
+                            </td>
+                        </tr>
+                       			{% endfor %}
+                       			</tr>
+                       		</tbody>
+                       	</table>
+                       </div>
+                   </td>
+               </tr>
+               <tr>
+                {% if applicant.experiences %}
+                    <td align="left" style="font-size:0px;padding:15px 15px 15px 15px;word-break:break-word;">
+                      <div style="font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:11px;line-height:1.5;text-align:left;color:#000000;">
+                            <p><strong>Technology Exposures:</strong></p>
+                          </div>
+                        </td>
+                      </tr>
+                        <tr>
+              <td align="left" style="font-size:0px;padding:15px 15px 15px 15px;word-break:break-word;">
+                              <div style="font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:11px;line-height:1.5;text-align:left;color:#000000;">
+                                {% load app_filters %}                                
+                                {% for xp in applicant.experiences.all %}
+                                {% if xp.domain.name|unique_list %}
+                                <ul><li><p><strong>{{ xp.domain.name }}</strong></p></li></ul>
+                                      {% for e in applicant.experiences.all %}
+                                        {% if e.domain.name == xp.domain.name %}
+                                          {% if forloop.last %}
+                                            {{ e.name }}
+                                          {% else %}
+                                            {{ e.name }},
+                                        {% endif %}
+                                      {% endif %}
+                                    {% endfor %}
+                                    <ul>
+                                  {% endif %} 
+                                </ul>
+                                {% endfor %}
+                                </div>
+                            </td>
+                            {% endif %}
+                        </tr>
+                <tr>
+                  {{ ""|cleanup }}
+
+                {% if applicant.education %}
+                    <td align="left" style="font-size:0px;padding:15px 15px 15px 15px;word-break:break-word;">
+                      <div style="font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:11px;line-height:1.5;text-align:left;color:#000000;">
+                            <p><strong>Education:</strong></p>
+                          </div>
+                        </td>
+                      </tr>
+                        <tr>
+              <td align="left" style="font-size:0px;padding:15px 15px 15px 15px;word-break:break-word;">
+                              <div style="font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:11px;line-height:1.5;text-align:left;color:#000000;">
+                                {% for e in applicant.education.all %}
+                                    <ul><li><p><strong>{{ e.name }}</strong> | {{ e.level }} | {{e.year}}</p></li></ul>
+                                    <ul>                                
+                                    </ul>
+                                  {% endfor %}
+                                </div>
+                            </td>
+                            {% endif %}
+                        </tr>
+                <tr>
+                    <td align="left" style="font-size:0px;padding:15px 15px 15px 15px;word-break:break-word;">
+                      <div style="font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:11px;line-height:1.5;text-align:left;color:#000000;">
+                            <p><strong>References:</strong></p>
+                          </div>
+                          {% if applicant.reference %}
+                        </td>
+                      </tr>
+                        <tr>
+              <td align="left" style="font-size:0px;padding:15px 15px 15px 15px;word-break:break-word;">
+                              <div style="font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:11px;line-height:1.5;text-align:left;color:#000000;">
+                                {% for r in applicant.reference.all %}
+
+                                    <ul><li><p><strong>{{ r.name }}</strong> | {{ r.employment }} | {{ r.contact }}</p></li></ul>
+                                    <ul>                                
+                                    </ul>
+                                  {% endfor %}
+                                </div>
+                            </td>
+                            {% else %}
+                                    <ul><li><p><strong> Available Upon Request</p></li></ul>
+                            {% endif %}
+                        </tr>
+           </tbody>
+       </table>
+   </div>
+</div>
+</body>
+{% endblock %}
+{% endif %}
+
+
+

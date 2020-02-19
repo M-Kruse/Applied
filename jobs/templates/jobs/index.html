@@ -1,0 +1,56 @@
+{% extends 'adminlte/base.html' %}
+{% block title %}Applied{% endblock %}
+
+{% block content %}
+<div class="col-sm-2">
+  <button data-toggle="modal" data-target="#modal-new-job-agg" type="button" class="btn btn-block btn-primary btn-sm">Add New Job</button>
+</div>
+<div class="card-body">
+ <div id="example2_wrapper" class="dataTables_wrapper dt-bootstrap4"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
+  <table id="example2" class="table table-bordered table-hover dataTable" style="font-size: 12px" role="grid" aria-describedby="example2_info">
+  <thead  align="center">
+  <tr role="row">
+    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1"></th>
+    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1">Status</th>
+    <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1">Scrape Date</th>
+    <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1">Date Posted</th>
+    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending">Job Title</th>
+    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1">Company</th>
+    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1">Location</th>
+    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1">Job Site</th>
+    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1">Keyword(s)</th>
+    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1">URL</th>
+    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="3">Actions</th>
+    
+  </thead>
+<tbody>
+    {% for job in jobs_list %}
+  <tr role="row" class="odd">
+<td><i class="far fa-2x fa-star"></i></td>
+
+    {% if job.is_applied %}
+      <td><button type="button" class="btn btn-block btn-success btn-xs">Applied</button></td>
+    {% else %}
+      <td><button type="button" class="btn btn-block btn-warning btn-xs">Unapplied</button></td>
+      
+
+    {% endif %}
+    <td> {{job.date_scraped}}</td><td>{{job.date_posted}}</td><td>{{job.title}}</td><td>{{job.company}}</td><td>{{job.location}}</td><td>{{job.job_site}}</td><td>{{job.keywords}}</td>
+    <td><a href="{{job.url}}">Job Link</a></td>
+    
+    <td>
+        <a href="/jobs/detail/{{ job.id }}"><button type="button" class="btn btn-block btn-primary btn-small">View</button></a>
+    </td>
+    <td>
+        <button type="button" class="btn btn-block btn-warning btn-small">Apply</button>
+    </td>
+    <td>
+        <button type="button" class="btn btn-block btn-danger btn-small">Delete</button>
+        </div>
+    </td>
+    
+  </tr>
+  {% endfor %}
+</tbody>
+</table>
+  {% endblock %}}

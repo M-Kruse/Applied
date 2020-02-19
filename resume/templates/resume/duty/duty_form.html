@@ -1,0 +1,45 @@
+{% extends 'adminlte/base.html' %}
+{% block title %}Applied{% endblock %}
+
+{% block content %}
+<body class=" app-viewer model-applicant">
+  <div id="container">  
+    <div id="content" class="colM"> 
+        <h4>Create New Duty</h4>
+        <div id="content-main">
+          <ul>
+            <p>A Duty briefely describes a responsibility that is part of your job description at an employment.</p>
+            <br>
+          <p> Examples: </p>
+            <ul>
+
+                <li>Provide email/phone/on-site technical support for customers.</li>
+                <li>Maintain database of customer contacts</li>
+                <li>Monitor team performance</li>
+                <li>Onboard new team members</li>
+            </ul>
+            </ul>			<form action="" method="post">
+    			{% csrf_token %}
+    				<fieldset class="module aligned ">
+    					{% for field in form  %}
+		      				<div class="form-row">
+			      				<div class="col-sm-6">
+			        				<b>{{ field.label }}</b>: {{ field }}
+			      				</div>
+		  					</div>
+   						{% endfor %}
+			   		</fieldset>
+            <input type="submit" class="btn btn-primary" name="create" value="Create">
+            <input type="submit" class="btn btn-primary" name="create_another" value="Create And Add Another">				
+   			</form>
+   		</div>
+   		<br class="clear">
+   </div>
+</div>
+<div id="content" class="colM">	
+</body>
+
+{% endblock %}
+
+
+        

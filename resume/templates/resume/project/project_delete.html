@@ -1,0 +1,34 @@
+{% block project_delete_modal %}
+<div class="modal fade" id="modal-delete-project-{{ p.id }}" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Confirm Delete</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              Please confirm you want to delete Project "{{ p.name }}"
+
+    <div id="content" class="colM"> 
+        <div id="content-main">
+      </div>
+      <br class="clear">
+   </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Nevermind</button>
+              <a href="/resume/project/delete/{{ p.id }}"><button type="button" class="btn btn-danger">Delete</button></a>
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+{% endblock %}
+
+
+
+
+

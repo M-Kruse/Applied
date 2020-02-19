@@ -1,0 +1,37 @@
+{% extends 'adminlte/base.html' %}
+{% block title %}Applied{% endblock %}
+
+{% block content %}
+<body class=" app-viewer model-applicant">
+	<div id="container">	
+    {{ formset.errors }}
+    {{ formset.non_field_errors }}
+    {{ form.errors }}
+		<div id="content" class="colM">	
+        <h4>Upload New Template</h4>
+        <div id="content-main">
+			<form enctype="multipart/form-data" action="" method="post">
+    			{% csrf_token %}
+    				<fieldset class="module aligned ">
+    					{% for field in form  %}
+		      				<div class="form-row">
+			      				<div class="col-sm-6">
+			        				<b>{{ field.label_tag }}</b> {{ field }}
+			      				</div>
+		  					</div>
+   						{% endfor %}
+			   		</fieldset>
+   					<input type="submit" class="btn btn-primary" value="Upload">
+   				
+   			</form>
+   		</div>
+   		<br class="clear">
+   </div>
+</div>
+<div id="content" class="colM">	
+</body>
+
+{% endblock %}
+
+
+        

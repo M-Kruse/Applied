@@ -1,0 +1,158 @@
+{% load adminlte_helpers %}
+{%load static %}
+<!-- Left side column. contains the sidebar -->
+<aside class="sidebar-dark-primary elevation-4 main-sidebar ">
+     <!-- Brand Logo -->
+     <a href="/" class="brand-link">
+        <img src="{% static '/applied-icon.png' %}" class="brand-image img-circle elevation-3" style="opacity: .8">
+        <span class="brand-text font-weight-light">Applied</span>
+      </a>
+      {% if user.is_authenticated %}
+    <!-- sidebar: style can be found in sidebar.less -->
+    <div class="sidebar">
+        <!-- Sidebar user panel -->
+        {% block user_panel %}
+        <!-- Sidebar user panel (optional) -->
+      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">
+          <img src="{% avatar_url size=90 %}" class="img-circle elevation-2" alt="User Image">
+        </div>
+        <div class="info">
+          <a href="#" class="d-block">{% firstof request.user.get_full_name request.user.username %}</a>
+        </div>
+      </div>
+        {% endblock %}
+
+        {% block form %}{% endblock %}
+
+        <!-- sidebar menu: : style can be found in sidebar.less -->
+        {% block nav_links_ul %}
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            {% block nav_links_outer %}
+            <li class="nav-header">{% block nav_heading %}NAVIGATION{% endblock %}</li>
+
+            {% block nav_links %}
+            <li class="nav-item">
+                        <a href="/" class="nav-link">
+                            <i class="nav-icon fas fa-tachometer-alt"></i> 
+                            <p>Dashboard</p>
+                        </a>
+                    </li>
+            <li class="nav-item has-tree-view ">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-id-card"></i> <p>Resume</p>
+                        <p><i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview menu-open">
+                            <li class="nav-item">
+                                    <a href="/resume/wizard/" class="nav-link">
+                                        <i class="nav-icon fas fa-hat-wizard"></i> Wizard
+                                    </a>
+                                </li>
+                        <li class="nav-item">
+                            <a href="/resume/" class="nav-link">
+                                <i class="nav-icon fas fa-list"></i> List
+                            </a>
+                        </li>
+            <li class="nav-item has-tree-view ">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-infinity"></i> <p>Components</p>
+                        <p><i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview menu-open">
+                            <li class="nav-item">
+                                    <a href="/resume/domain/" class="nav-link">
+                                        <i class="nav-icon fas fa-asterisk"></i> Domains
+                                    </a>
+                                </li>
+                        <li class="nav-item">
+                            <a href="/resume/experience/" class="nav-link">
+                                <i class="nav-icon fas fa-asterisk"></i> Experience
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/resume/project/" class="nav-link">
+                                <i class="nav-icon fas fa-asterisk"></i> Projects
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/resume/duty/" class="nav-link">
+                                <i class="nav-icon fas fa-asterisk"></i> Duties
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/resume/employment/" class="nav-link">
+                                <i class="nav-icon fas fa-asterisk"></i> Employments
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/resume/reference/" class="nav-link">
+                                <i class="nav-icon fas fa-asterisk"></i> References
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/resume/education/" class="nav-link">
+                                <i class="nav-icon fas fa-asterisk"></i> Education
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/resume/applicant/" class="nav-link">
+                                <i class="nav-icon fas fa-asterisk"></i> Applicants
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/resume/template/" class="nav-link">
+                                <i class="nav-icon fas fa-asterisk"></i> Templates
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                    </ul>
+                </li>
+                <li class="nav-item has-tree-view ">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-briefcase"></i> <p>Job</p>
+                        <p><i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview menu-open">
+                            <li class="nav-item">
+                                        <a href="/jobs/" class="nav-link">
+                                            <i class="nav-icon fas fa-list"></i>List
+                                        </a>
+                                </li>
+                            <li class="nav-item">
+                                        <a href="/jobs/sites/" class="nav-link">
+                                            <i class="nav-icon fas fa-cloud"></i>Sites
+                                        </a>
+                                </li>
+                        <li class="nav-item">
+                            <a href="/jobs/aggregators/" class="nav-link">
+                                <i class="nav-icon fab fa-rev"></i>Aggregator
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/jobs/applications/" class="nav-link">
+                                <i class="nav-icon fas fa-clipboard"></i>Applications
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/jobs/interviews/" class="nav-link">
+                                <i class="nav-icon fas fa-user-tie"></i>Interviews
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+            {% endblock nav_links %}
+            {% endblock nav_links_outer %}
+            </ul>
+            </nav>
+        {% endblock nav_links_ul %}
+    </div>
+    {% endif %}
+    <!-- /.sidebar -->
+</aside>

@@ -1,0 +1,41 @@
+{% extends 'adminlte/base.html' %}
+{% block title %}Applied{% endblock %}
+
+	{% if resume_list %}
+		{% block content %}
+		<div class="p-3 mb-2 text-dark">
+		<table class="table" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;">
+			  <thead>
+			    <tr>
+			      <th scope="col">#</th>
+			      <th scope="col">Name</th>
+			    </tr>
+			</thead>
+        	<tbody>
+			{% for domain in domain_list %}
+			        <tr>
+			        	<th scope="row"> {{ domain.id }} </th>
+			        	<td>{{ domain.name }}</td>
+			        	
+						<td>
+							<a href="/resume/domain/edit/{{ domain.id }}"><button type="button" class="btn btn-primary">Edit</button></a>
+        <button data-toggle="modal" data-target="#modal-delete-domain-{{ domain.id }}" type="button" class="btn btn-danger ">Delete</button>
+
+						 </td>
+					</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<div id="content" class="colM">	
+		<div id="content-main">
+			<a href="/resume/domain/new"><button class="btn btn-primary">Add New Experience Domain</button></a>
+		</div>
+	</div>
+</div>
+			{% for domain in domain_list %}
+  {% include 'resume/domain/domain_delete.html' %}
+{% endfor %}
+
+		{% endblock %}
+	{% endif %}
+

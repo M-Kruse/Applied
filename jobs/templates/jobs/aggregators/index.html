@@ -1,0 +1,45 @@
+{% extends 'adminlte/base.html' %}
+
+{% block title %}Applied{% endblock %}
+
+{% block content %}
+<div class="col-sm-2">
+  <a href="/jobs/aggregators/new/"><button data-toggle="modal" data-target="#modal-new-job-agg" type="button" class="btn btn-block btn-primary btn-sm">Add New Aggregator</button></a>
+</div>
+<div class="card-body">
+ <div id="example2_wrapper" class="dataTables_wrapper dt-bootstrap4"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
+  <table id="example2" class="table table-bordered table-hover dataTable" style="font-size: 12px" role="grid" aria-describedby="example2_info">
+  <thead  align="center">
+  <tr role="row">
+    <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1">Job Site</th>
+    <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1">Keywords</th>
+    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" >Run Schedule</th>
+    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1">Archive Raw HTML</th>
+    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1">Send Alerts</th>
+    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="2">Actions</th>
+    
+  </thead>
+<tbody>
+    {% for agg in agg_list %}
+  <tr role="row" class="odd">
+    <td> {{agg.job_site}}</td><td>{{agg.keywords}}</td><td>{{agg.run_schedule}}</td><td>{{agg.archive_raw_html}}</td><td>{{agg.send_alerts}}</td>
+
+    <td>
+        <button type="button" class="btn btn-block btn-primary btn-xs">Edit</button>
+    </td>
+    <td>
+        <button type="button" class="btn btn-block btn-danger btn-xs">Delete</button>
+        </div>
+    </td>
+    
+  </tr>
+  {% endfor %}
+</tbody>
+</table>
+</div>
+</div>
+{% for s in site_list %}
+  {% include 'jobs/sites/delete_modal.html' %}
+{% endfor %}
+
+  {% endblock %}  

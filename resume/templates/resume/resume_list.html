@@ -1,0 +1,58 @@
+{% extends 'adminlte/base.html' %}
+{% block title %}Applied{% endblock %}
+
+	{% if resume_list %}
+		{% block content %}
+		<div class="p-3 mb-2 text-dark">
+		<table class="table" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;">
+			  <thead>
+			    <tr>
+			      <th scope="col">#</th>
+			      <th scope="col">Resume Name</th>
+			      <th scope="col">Applicant</th>
+			      <th scope="col">Format</th>
+			      <th scope="col">Date Created</th>
+			      <th scope="col">Actions</th>
+			    </tr>
+			</thead>
+        	<tbody>
+			{% for resume in resume_list %}
+			        <tr>
+			        	<th scope="row"> {{ resume.id }} </th>
+			        	<td>{{ resume.name }}</td>
+			        	<td>{{ resume.applicant }}</td>
+			        	<td>{{ resume.output_format }}</td>
+						<td>{{ resume.create_date }}</td>
+						<td>
+							<a href="/resume/edit/{{ resume.id }}"><button type="button" class="btn btn-primary">Edit</button></a>
+							<a href="/resume/{{ resume.output_format|lower }}/{{ resume.id }}"
+							  target="popup" 
+							  onclick="window.open('/resume/{{ resume.output_format|lower }}/{{ resume.id }}','popup','width=600,height=600'); return false;">
+							  <button type="button" class="btn btn-primary">Preview</button>
+							</a>
+							<a target="_blank" href="/resume/{{ resume.output_format|lower }}/{{ resume.id }}"></a>
+        <button data-toggle="modal" data-target="#modal-delete-resume-{{ resume.id }}" type="button" class="btn btn-danger ">Delete</button>
+						 </td>
+					</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<div id="content" class="colM">	
+		<div id="content-main">
+			<a href="/resume/new"><button class="btn btn-primary">Create New Resume</button></a>
+			<a href="/resume/wizard"><button class="btn btn-primary">New Resume Wizard</button></a>
+		</div>
+
+	</div>
+
+</div>
+</div>
+</div>
+</div>
+		{% for r in resume_list %}
+  {% include 'resume/resume_delete.html' %}
+{% endfor %}
+
+		{% endblock %}
+	{% endif %}
+

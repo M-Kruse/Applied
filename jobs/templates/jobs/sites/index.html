@@ -1,0 +1,56 @@
+{% extends 'adminlte/base.html' %}
+
+{% block title %}Applied{% endblock %}
+
+{% block content %}
+<div class="col-sm-1">
+  <a href="/jobs/sites/new/"><button type="button" class="btn btn-block btn-primary btn-sm">Add New Job Site</button></a>
+</div>
+<div class="card-body">
+ <div id="example2_wrapper" class="dataTables_wrapper dt-bootstrap4"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
+
+  <table id="example2" class="table table-bordered table-hover dataTable" style="font-size: 12px" role="grid" aria-describedby="example2_info">
+  <thead  align="center">
+  <tr role="row">
+    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1">Website</th>
+    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1">Search URL</th>
+    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1">Jobs Per PAge</th>
+    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1">Page Parameter</th>
+    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="3">Actions</th>
+    
+  </thead>
+<tbody>
+    {% for s in site_list %}
+  <tr role="row" class="odd">
+    <td style="text-align:center">{{s.url}}</td>
+    <td style="text-align:center">{{s.search_url_template}}</td>
+    <td style="text-align:center">{{s.jobs_per_page}}</td>
+    <td style="text-align:center">{{s.page_parameter}}</td>
+
+    <td>
+        <button type="button" class="btn btn-block bg-gradient-primary btn-sm">Edit</button>
+    </td>
+    <td>
+        <button data-toggle="modal" data-target="#modal-delete-site-{{ s.id }}" type="button" class="btn btn-block btn-danger btn-sm">Delete</button>
+        </div>
+    </td>
+    
+  </tr>
+  {% endfor %}
+</tbody>
+</table>
+</div>
+</div>
+</tr>
+</thead>
+</table>
+{% for s in site_list %}
+  {% include 'jobs/sites/delete_modal.html' %}
+{% endfor %}
+
+</div>
+</div>
+</div>
+</div>
+
+  {% endblock %}}

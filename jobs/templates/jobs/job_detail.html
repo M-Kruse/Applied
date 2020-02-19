@@ -1,0 +1,30 @@
+{% extends 'adminlte/base.html' %}
+
+{% block title %}Applied{% endblock %}
+
+{% block content %}
+<body class=" app-viewer model-applicant">
+  <div id="container">  
+    <div id="content" class="colM"> 
+        <h4>Add New Job Site</h4>
+        <div id="content-main">
+  <p>{{ job.scrape_date }}</p>
+  <p>{{ job.date_posted }}</p>
+  <p>{{ job.title }}</p>
+  <p>{{ job.company }}</p>
+  <p>{{ job.location }}</p>
+  <p>{{ job.job_site }}</p>
+  <p>{{ job.keywords }}</p>
+  <p>{{ job.url }}</p>
+
+      </div>
+      <br class="clear">
+   </div>
+</div>
+<div id="content" class="colM"> 
+</body>
+
+{% endblock %}
+
+
+        
