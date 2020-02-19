@@ -40,7 +40,7 @@ class HTMLView(generic.ListView):
     context_object_name = 'employment_list'
     
     def get_queryset(self):
-        resume = Resume.objects.get(owner=request.user)
+        resume = Resume.objects.get(owner=self.request.user)
         return resume.applicant.employment.all
 
     def get_context_data(self, **kwargs):
