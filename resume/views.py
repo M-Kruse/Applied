@@ -17,6 +17,7 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
+
 from resume.tokens import account_activation_token
 
 from django.contrib.auth.models import User
@@ -25,6 +26,8 @@ from .models import Employment, Applicant, Experience, Education, Resume, Domain
 
 from .forms import ResumeForm, ApplicantForm, DomainForm, ExperienceForm, EducationForm, ReferenceForm, EmploymentForm, ProjectForm, DutyForm, TemplateForm
 from .forms import SignupForm
+
+from django.core.files.storage import FileSystemStorage
 
 class IndexView(generic.ListView):
     template_name = 'resume/index.html'
@@ -368,9 +371,10 @@ def new_template(request):
         if form.is_valid():
             name = form.cleaned_data['name']
             for filename, file in request.FILES.items():
-                template_file = request.FILES[filename].name
-            print("template file:", template_file)
-            t = Template(owner=request.user, name=name, file=upload_dir + template_file)
+                file_ref = request.FILES[filename]
+                fs = FileSystemStorage()
+                filename = fs.save(upload_dir + file_ref.name, file_ref)
+            t = Template(owner=request.user, name=name, file=filename)
             t.save()
             return HttpResponseRedirect('/resume/template/')
     else:

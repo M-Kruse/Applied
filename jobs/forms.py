@@ -17,7 +17,7 @@ class AggregatorForm(ModelForm):
 class ApplicationForm(ModelForm):
 	class Meta:
 		model = Application
-		fields = ['apply_date', 'job', 'status', 'contact', 'notes' ]
+		fields = ['apply_date', 'job', 'status', 'contact', 'notes', 'resume' ]
 
 class InterviewForm(ModelForm):
 	class Meta:

@@ -1,6 +1,7 @@
 from django.db import models
 import uuid
 from django.conf import settings
+from resume.models import Resume
 
 # LEXERS = [item for item in get_all_lexers() if item[1]]
 # LANGUAGE_CHOICES = sorted([(item[1][0], item[0]) for item in LEXERS])
@@ -45,7 +46,7 @@ class Job(models.Model):
             ordering = ['date_scraped']
 
     def __str__(self):
-        return self.title
+        return "{0} @ {1}".format(self.title, self.company)
 
 class Aggregator(models.Model):
     SCHEDULE_CHOICES = ["Manual", "Hourly", "Daily", "Weekly"]
@@ -80,6 +81,8 @@ class Application(models.Model):
     status = models.CharField(choices=STATUS_CHOICES, max_length=12, default='')
     contact = models.CharField(max_length=100, default='')
     notes = models.TextField()
+    resume = models.ForeignKey(Resume, on_delete=models.PROTECT, default='')
+
 
     def __str__(self):
         return "{0} @ {1}".format(self.job.__str__(), self.job.company.__str__())
