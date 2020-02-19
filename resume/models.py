@@ -24,14 +24,14 @@ class Employment(models.Model):
 
 class Duty(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    description = models.CharField(max_length=256, default=None, blank=True)
+    description = models.CharField(max_length=256, default=None, blank=True, unique=True)
    
     def __str__(self):
         return self.description
 
 class Project(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    description = models.CharField(max_length=256, default=None, blank=True)
+    description = models.CharField(max_length=256, default=None, blank=True, unique=True)
 
     def __str__(self):
         return self.description
@@ -51,14 +51,14 @@ class Applicant(models.Model):
 
 class Domain(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    name = models.CharField(max_length=64, blank=False)
+    name = models.CharField(max_length=64, blank=False, unique=True)
 
     def __str__(self):
         return self.name
 
 class Experience(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    name = models.CharField(max_length=64, default=None, blank=False)
+    name = models.CharField(max_length=64, default=None, blank=False, unique=True)
     domain = models.ForeignKey(Domain, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -75,7 +75,7 @@ class Education(models.Model):
 
 class Reference(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    name = models.CharField(max_length=64, blank=False)
+    name = models.CharField(max_length=64, blank=False, unique=True)
     contact = models.CharField(max_length=64, default="Availabe On Request", blank=True)
     employment = models.ForeignKey(Employment, on_delete=models.CASCADE)
     #employment = models.ManyToManyField('Employment', related_name='employments', blank=True)
@@ -92,7 +92,7 @@ class Style(models.Model):
 
 class Resume(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    name = models.CharField(max_length=64, blank=False)
+    name = models.CharField(max_length=64, blank=False, unique=True)
     HTML = 'HTML'
     JSON = 'JSON'
     DOCX = 'DOCX'
@@ -113,7 +113,7 @@ class Resume(models.Model):
 
 class Template(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    name = models.CharField(max_length=64, blank=False)
+    name = models.CharField(max_length=64, blank=False, unique=True)
     file = models.FileField(upload_to='uploads/') 
 
     def __str__(self):
