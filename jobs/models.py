@@ -2,10 +2,7 @@ from django.db import models
 import uuid
 from django.conf import settings
 from resume.models import Resume
-
-# LEXERS = [item for item in get_all_lexers() if item[1]]
-# LANGUAGE_CHOICES = sorted([(item[1][0], item[0]) for item in LEXERS])
-# STYLE_CHOICES = sorted([(item, item) for item in get_all_styles()])
+from requests import get
 
 class JobSite(models.Model):
     url = models.CharField(max_length=100, default='', unique=True)
@@ -16,10 +13,8 @@ class JobSite(models.Model):
     is_easy_apply = models.BooleanField(default=False)
     apply_url = models.CharField(max_length=256, default='')
 
-
     def __str__(self):
         return self.url
-
 
 class Job(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True)
@@ -37,7 +32,7 @@ class Job(models.Model):
     is_favorite = models.BooleanField(default=False)
     is_hidden = models.BooleanField(default=False)
     is_delete = models.BooleanField(default=False)
-    #favorite = 
+    description = models.ForeignKey('Description', on_delete=models.CASCADE, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         super(Job, self).save(*args, **kwargs)
@@ -47,6 +42,9 @@ class Job(models.Model):
 
     def __str__(self):
         return "{0} @ {1}".format(self.title, self.company)
+
+class Description(models.Model):
+    desc = models.TextField()
 
 class Aggregator(models.Model):
     SCHEDULE_CHOICES = ["Manual", "Hourly", "Daily", "Weekly"]
@@ -86,8 +84,6 @@ class Application(models.Model):
 
     def __str__(self):
         return "{0} @ {1}".format(self.job.__str__(), self.job.company.__str__())
-
-
 
 class Interview(models.Model):
     EMAIL = "EM"

@@ -116,8 +116,7 @@ GitHub.sublime-settings
 
 
 staticfiles/
-static/
-migrations/*
+*migrations/*
 
 !static
 static/*
