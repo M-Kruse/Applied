@@ -3,3 +3,4 @@ djangorestframework
 psycopg2>=2.7,<3.0
 django-adminlte3
 docxtpl
+requests
