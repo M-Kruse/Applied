@@ -46,6 +46,9 @@ class Job(models.Model):
 class Description(models.Model):
     text = models.TextField()
 
+    def __str__(self):
+        return self.text.__str__()
+
 class Aggregator(models.Model):
     SCHEDULE_CHOICES = ["Manual", "Hourly", "Daily", "Weekly"]
     keywords = models.CharField(max_length=128, default='')
@@ -57,7 +60,6 @@ class Aggregator(models.Model):
 
     def __str__(self):
         return self.job_site.__str__()
-
 
 class Application(models.Model):
     UNAPPLIED = "UA"
