@@ -32,7 +32,7 @@ class Job(models.Model):
     is_favorite = models.BooleanField(default=False)
     is_hidden = models.BooleanField(default=False)
     is_delete = models.BooleanField(default=False)
-    description = models.ForeignKey('Description', on_delete=models.CASCADE, blank=True, null=True)
+    description = models.ForeignKey('Description', on_delete=models.CASCADE, null=True)
 
     def save(self, *args, **kwargs):
         super(Job, self).save(*args, **kwargs)
@@ -44,7 +44,7 @@ class Job(models.Model):
         return "{0} @ {1}".format(self.title, self.company)
 
 class Description(models.Model):
-    desc = models.TextField()
+    text = models.TextField()
 
 class Aggregator(models.Model):
     SCHEDULE_CHOICES = ["Manual", "Hourly", "Daily", "Weekly"]

@@ -1,11 +1,18 @@
 from rest_framework import serializers
-from jobs.models import Job, JobSite, Aggregator, Application, Interview
+from jobs.models import Job, JobSite, Aggregator, Application, Interview, Description
 from django.contrib.auth.models import User
+
+class DescriptionSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Description
+        fields = [
+            'text'
+        ]
 
 
 class JobSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
-
+    description = DescriptionSerializer()
     class Meta:
         model = Job
         fields = [
@@ -17,8 +24,19 @@ class JobSerializer(serializers.HyperlinkedModelSerializer):
                     'company',
                     'date_posted',
                     'date_scraped',
-                    'url'
+                    'url',
+                    'description'
                 ]
+
+
+    def create(self, validated_data):
+        print("DATA:",validated_data)
+        #desc_data = validated_data.pop('model')
+        desc_serializer = DescriptionSerializer(data=validated_data['description'])
+        desc_serializer.is_valid(raise_exception=True)
+        validated_data['description'] = desc_serializer.save()
+        instance = super().create(validated_data)
+        return instance
 
 class JobSiteSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
