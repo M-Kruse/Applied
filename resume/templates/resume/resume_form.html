@@ -1,16 +1,19 @@
 {% extends 'adminlte/base.html' %}
 
 {% block content %}
-<body class=" app-viewer model-applicant">
+<div class="col-md-6">
+<div class="card card-primary">
+      <div class="card-header">
+        <h3 class="card-title">Create New Resume</h3>
+      </div>
 	<div id="container">	
+    <br>
 		<div id="content" class="colM">	
-        <h4>Create New Resume</h4>
-        <div id="content-main">
 			<form action="" method="post">
     			{% csrf_token %}
     				<fieldset class="module aligned ">
     					{% for field in form  %}
-		      				<div class="form-row">
+		      				<div class="form-group">
 			      				<div class="col-sm-6">
 			        				<b>{{ field.label_tag }}</b> - {{ field }}
 			      				</div>
@@ -20,14 +23,10 @@
    					<input type="submit" class="btn btn-primary" value="Create">
    				
    			</form>
-   		</div>
-   		<br class="clear">
-   </div>
+        <br>
 </div>
-<div id="content" class="colM">	
-</body>
-
+</div>
+</div>
+</div>
+</div>
 {% endblock %}
-
-
-        

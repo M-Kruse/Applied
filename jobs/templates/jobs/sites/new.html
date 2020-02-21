@@ -1,35 +1,34 @@
 {% extends 'adminlte/base.html' %}
 
-{% block title %}Applied{% endblock %}
-
 {% block content %}
-<body class=" app-viewer model-applicant">
-  <div id="container">  
-    <div id="content" class="colM"> 
-        <h4>Add New Job Site</h4>
-        <div id="content-main">
-      <form action="" method="post">
+<div class="col-md-6">
+<div class="card card-primary">
+      <div class="card-header">
+          <h4>Add New Job Site</h4>
+            <div id="container"> 
+                <form action="" method="post">
           {% csrf_token %}
-            <fieldset class="module aligned ">
+            
               {% for field in form  %}
+              
+              <div class="card-body">
                   <div class="form-row">
                     <div class="col-sm-6">
-                      <b>{{ field.label_tag }}</b> - {{ field }}
+                      <b>{{ field.label_tag }}</b>
+                      <fieldset class="module aligned "> {{ field }}</fieldset>
                     </div>
-                </div>
+              </div>
+          </div>
+              </fieldset>
               {% endfor %}
-            </fieldset>
-            <input type="submit" class="btn btn-primary" value="Create">
-          
-        </form>
-      </div>
-      <br class="clear">
-   </div>
+
+            <br>
+            <input type="submit" class="btn btn-primary" name="create" value="Create">
+            <input type="submit" class="btn btn-primary" name="create_another" value="Create And Add Another">
+            
 </div>
-<div id="content" class="colM"> 
-</body>
+</form>
+</div>
 
 {% endblock %}
 
-
-        
