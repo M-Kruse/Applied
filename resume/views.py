@@ -128,7 +128,7 @@ def new_applicant(request):
                 a.reference.set(references)
                 a.education.set(education)
                 if request.session['isWizard'] == True:
-                    return HttpResponseRedirect('/resume/new')
+                    return HttpResponseRedirect('/resume/template/new')
                 else:
                     return HttpResponseRedirect('/resume/applicant/')
     else:
@@ -376,7 +376,10 @@ def new_template(request):
                 filename = fs.save(upload_dir + file_ref.name, file_ref)
             t = Template(owner=request.user, name=name, file=filename)
             t.save()
-            return HttpResponseRedirect('/resume/template/')
+            if request.session['isWizard'] == True:
+                return HttpResponseRedirect('/resume/new')
+            else:
+                return HttpResponseRedirect('/resume/template/')
     else:
         form = TemplateForm()
     return render(request, 'resume/template/template_form.html', {'form': form})
