@@ -114,9 +114,8 @@ GitHub.sublime-settings
 !.vscode/extensions.json 
 .history
 
-
 staticfiles/
-*migrations/*
+*/migrations/*
 
 !static
 static/*
