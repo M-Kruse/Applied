@@ -12,7 +12,7 @@ from django.views.generic import DetailView, TemplateView, UpdateView, DeleteVie
 
 
 class JobIndexView(generic.ListView):
-    template_name = 'jobs/index.html'
+    template_name = 'jobs/index_cards.html'
     context_object_name = 'jobs_list'
     
     def get_queryset(self):
