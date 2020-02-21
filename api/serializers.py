@@ -16,22 +16,24 @@ class JobSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Job
         fields = [
-                    'owner',
-                    'job_site',
-                    'keywords',
-                    'title',
-                    'location',
-                    'company',
-                    'date_posted',
-                    'date_scraped',
-                    'url',
-                    'description'
-                ]
-
+            'owner',
+            'job_site',
+            'keywords',
+            'title',
+            'location',
+            'company',
+            'date_posted',
+            'date_scraped',
+            'url',
+            'description'
+        ]
 
     def create(self, validated_data):
-        print("DATA:",validated_data)
-        #desc_data = validated_data.pop('model')
+        """
+        This is special because it overrides the default create method for this serializer
+        Required for nested serializing for when a model field is using foreign key association
+        This nests the Description serializer into the Job Serializer
+        """
         desc_serializer = DescriptionSerializer(data=validated_data['description'])
         desc_serializer.is_valid(raise_exception=True)
         validated_data['description'] = desc_serializer.save()
@@ -44,13 +46,13 @@ class JobSiteSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = JobSite
         fields = [
-                    'owner',
-                    'url',
-                    'date_created',
-                    'search_url_template',
-                    'jobs_per_page',
-                    'page_parameter'
-                ]
+            'owner',
+            'url',
+            'date_created',
+            'search_url_template',
+            'jobs_per_page',
+            'page_parameter'
+        ]
 
 class AggregatorSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
@@ -58,14 +60,13 @@ class AggregatorSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Aggregator
         fields = [
-                    'owner',
-                    'job_site',
-                    'max_threads',
-                    'run_schedule',
-                    'archive_raw_html',
-                    'send_alerts',
-
-                ]
+            'owner',
+            'job_site',
+            'max_threads',
+            'run_schedule',
+            'archive_raw_html',
+            'send_alerts',
+        ]
 
 class ApplicationSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
@@ -73,14 +74,14 @@ class ApplicationSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Application
         fields = [
-                    'create_date',
-                    'apply_date',
-                    'owner',
-                    'job',
-                    'status',
-                    'contact',
-                    'notes'
-                ]
+            'create_date',
+            'apply_date',
+            'owner',
+            'job',
+            'status',
+            'contact',
+            'notes'
+        ]
 
 class InterviewSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
@@ -88,17 +89,21 @@ class InterviewSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Interview
         fields = [
-                    'owner',
-                    'application',
-                    'date',
-                    'type',
-                    'contact',
-                    'notes',
-                    'date_created'
-                ]
+            'owner',
+            'application',
+            'date',
+            'type',
+            'contact',
+            'notes',
+            'date_created'
+        ]
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
-    snippets = serializers.HyperlinkedRelatedField(many=True, view_name='job-detail', read_only=True)
+    snippets = serializers.HyperlinkedRelatedField(
+        many=True,
+        view_name='job-detail',
+        read_only=True
+    )
 
     class Meta:
         model = User

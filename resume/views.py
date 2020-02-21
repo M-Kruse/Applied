@@ -2,32 +2,36 @@ import os
 
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render, redirect
+from django.http import JsonResponse
+
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
-
-from django.http import JsonResponse
 from django.views.generic import TemplateView, UpdateView, DeleteView
 
-from django.contrib.auth import login, authenticate
-from django.contrib.auth.forms import UserCreationForm
-
+from django.contrib.auth import login
 from django.contrib.sites.shortcuts import get_current_site
+from django.contrib.auth.models import User
+
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+
 from django.template.loader import render_to_string
+
 from django.core.mail import EmailMessage
+from django.core.files.storage import FileSystemStorage
 
 from resume.tokens import account_activation_token
 
-from django.contrib.auth.models import User
+from .models import (Employment, Applicant, Experience,
+                     Education, Resume, Domain, Reference,
+                     Project, Duty, Template)
 
-from .models import Employment, Applicant, Experience, Education, Resume, Domain, Experience, Reference, Project, Duty, Template
+from .forms import (ResumeForm, ApplicantForm, DomainForm,
+                    ExperienceForm, EducationForm, ReferenceForm,
+                    EmploymentForm, ProjectForm, DutyForm, TemplateForm)
 
-from .forms import ResumeForm, ApplicantForm, DomainForm, ExperienceForm, EducationForm, ReferenceForm, EmploymentForm, ProjectForm, DutyForm, TemplateForm
 from .forms import SignupForm
-
-from django.core.files.storage import FileSystemStorage
 
 class IndexView(generic.ListView):
     template_name = 'resume/index.html'
@@ -41,7 +45,7 @@ class HTMLView(generic.ListView):
     model = Employment
     template_name = 'resume/resume.html'
     context_object_name = 'employment_list'
-    
+
     def get_queryset(self):
         resume = Resume.objects.get(owner=self.request.user)
         return resume.applicant.employment.all
@@ -69,68 +73,74 @@ class JSONResponseMixin:
 class JSONView(JSONResponseMixin, TemplateView):
 
     def render_to_response(self, context, **response_kwargs):
-        return self.render_to_json_response(create_resume_json(self.kwargs.get('pk')), **response_kwargs)
-
-
+        return self.render_to_json_response(
+            create_resume_json(self.kwargs.get('pk')), **response_kwargs
+        )
 
 class ResumeListView(generic.ListView):
     model = Resume
     template_name = 'resume/resume_list.html'
     context_object_name = 'resume_list'
-    
+
     def get_queryset(self):
         self.request.session['isWizard'] = False
         resume = Resume.objects.all().order_by("id")
         return resume.filter(owner=self.request.user)
-         
+
 def new_resume(request):
     if request.method == 'POST':
         form = ResumeForm(request.POST)
         if form.is_valid():
-                name = form.cleaned_data['name']
-                applicant = form.cleaned_data['applicant']
-                output_format = form.cleaned_data['output_format']
-                template = form.cleaned_data['template']
-                #style = form.cleaned_data['style']
-                r = Resume(owner=request.user, name=name, applicant=applicant, output_format=output_format, template=template)
-                r.save()
-                if request.session['isWizard'] == True:
-                    request.session['isWizard'] = False
-                return HttpResponseRedirect('/resume/')
+            name = form.cleaned_data['name']
+            applicant = form.cleaned_data['applicant']
+            output_format = form.cleaned_data['output_format']
+            template = form.cleaned_data['template']
+            #style = form.cleaned_data['style']
+            r = Resume(
+                owner=request.user,
+                name=name,
+                applicant=applicant,
+                output_format=output_format,
+                template=template
+            )
+            r.save()
+            if request.session['isWizard']:
+                request.session['isWizard'] = False
+            return HttpResponseRedirect('/resume/')
     else:
         form = ResumeForm()
-    return render(request, 'resume/resume_form.html', {'form': form})  
+    return render(request, 'resume/resume_form.html', {'form': form})
 
 class ApplicantListView(generic.ListView):
     model = Applicant
     template_name = 'resume/applicant/applicant_list.html'
     context_object_name = 'app_list'
-    
+
     def get_queryset(self):
         apps = Applicant.objects.all().order_by("id")
         return apps.filter(owner=self.request.user)
-        
+
 def new_applicant(request):
     if request.method == 'POST':
         form = ApplicantForm(request.POST)
         if form.is_valid():
-                name = form.cleaned_data['name']
-                email = form.cleaned_data['email']
-                phone = form.cleaned_data['phone']                
-                employments = form.cleaned_data['employment']
-                experiences = form.cleaned_data['experiences']
-                references = form.cleaned_data['reference']
-                education = form.cleaned_data['education']
-                a = Applicant(owner=request.user, name=name, email=email, phone=phone)
-                a.save()
-                a.employment.set(employments)
-                a.experiences.set(experiences)
-                a.reference.set(references)
-                a.education.set(education)
-                if request.session['isWizard'] == True:
-                    return HttpResponseRedirect('/resume/template/new')
-                else:
-                    return HttpResponseRedirect('/resume/applicant/')
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            phone = form.cleaned_data['phone']
+            employments = form.cleaned_data['employment']
+            experiences = form.cleaned_data['experiences']
+            references = form.cleaned_data['reference']
+            education = form.cleaned_data['education']
+            a = Applicant(owner=request.user, name=name, email=email, phone=phone)
+            a.save()
+            a.employment.set(employments)
+            a.experiences.set(experiences)
+            a.reference.set(references)
+            a.education.set(education)
+            if request.session['isWizard']:
+                return HttpResponseRedirect('/resume/template/new')
+            else:
+                return HttpResponseRedirect('/resume/applicant/')
     else:
         form = ApplicantForm()
 
@@ -140,7 +150,7 @@ class DomainListView(generic.ListView):
     model = Domain
     template_name = 'resume/domain/domain_list.html'
     context_object_name = 'domain_list'
-    
+
     def get_queryset(self):
         self.request.session['isWizard'] = False
         domains = Domain.objects.all().order_by("id")
@@ -150,16 +160,16 @@ def new_domain(request):
     if request.method == 'POST':
         form = DomainForm(request.POST)
         if form.is_valid():
-                name = form.cleaned_data['name']
-                d = Domain(owner=request.user, name=name)
-                d.save()
-                if 'create_another' in request.POST:
-                    return HttpResponseRedirect('/resume/domain/new')
+            name = form.cleaned_data['name']
+            d = Domain(owner=request.user, name=name)
+            d.save()
+            if 'create_another' in request.POST:
+                return HttpResponseRedirect('/resume/domain/new')
+            else:
+                if request.session['isWizard']:
+                    return HttpResponseRedirect('/resume/experience/new')
                 else:
-                    if request.session['isWizard'] == True:
-                        return HttpResponseRedirect('/resume/experience/new')
-                    else:
-                        return HttpResponseRedirect('/resume/domain/')
+                    return HttpResponseRedirect('/resume/domain/')
     else:
         form = DomainForm()
     return render(request, 'resume/domain/domain_form.html', {'form': form})
@@ -168,7 +178,7 @@ class ExperienceListView(generic.ListView):
     model = Experience
     template_name = 'resume/xp/xp_list.html'
     context_object_name = 'xp_list'
-    
+
     def get_queryset(self):
         xps = Experience.objects.all().order_by("id")
         return xps.filter(owner=self.request.user)
@@ -177,17 +187,17 @@ def new_experience(request):
     if request.method == 'POST':
         form = ExperienceForm(request.POST)
         if form.is_valid():
-                name = form.cleaned_data['name']
-                domain = form.cleaned_data['domain']
-                e = Experience(owner=request.user, name=name, domain=domain)
-                e.save()
-                if 'create_another' in request.POST:
-                    return HttpResponseRedirect('/resume/experience/new')
+            name = form.cleaned_data['name']
+            domain = form.cleaned_data['domain']
+            e = Experience(owner=request.user, name=name, domain=domain)
+            e.save()
+            if 'create_another' in request.POST:
+                return HttpResponseRedirect('/resume/experience/new')
+            else:
+                if request.session['isWizard'] == True:
+                    return HttpResponseRedirect('/resume/duty/new')
                 else:
-                    if request.session['isWizard'] == True:
-                        return HttpResponseRedirect('/resume/duty/new')
-                    else:
-                        return HttpResponseRedirect('/resume/experience/')
+                    return HttpResponseRedirect('/resume/experience/')
     else:
         form = ExperienceForm()
     return render(request, 'resume/xp/xp_form.html', {'form': form})
@@ -196,7 +206,7 @@ class EducationListView(generic.ListView):
     model = Education
     template_name = 'resume/edu/edu_list.html'
     context_object_name = 'edu_list'
-    
+
     def get_queryset(self):
         self.request.session['isWizard'] = False
         edus = Education.objects.all().order_by("id")
@@ -206,15 +216,15 @@ def new_education(request):
     if request.method == 'POST':
         form = EducationForm(request.POST)
         if form.is_valid():
-                name = form.cleaned_data['name']
-                level = form.cleaned_data['level']
-                year = form.cleaned_data['year']
-                e = Education(owner=request.user, name=name, level=level, year=year)
-                e.save()
+            name = form.cleaned_data['name']
+            level = form.cleaned_data['level']
+            year = form.cleaned_data['year']
+            e = Education(owner=request.user, name=name, level=level, year=year)
+            e.save()
         if 'create_another' in request.POST:
             return HttpResponseRedirect('/resume/education/new')
         else:
-            if request.session['isWizard'] == True:
+            if request.session['isWizard']:
                 return HttpResponseRedirect('/resume/employment/new')
             else:
                 return HttpResponseRedirect('/resume/education/')
@@ -226,7 +236,7 @@ class ReferenceListView(generic.ListView):
     model = Reference
     template_name = 'resume/ref/ref_list.html'
     context_object_name = 'ref_list'
-    
+
     def get_queryset(self):
         self.request.session['isWizard'] = False
         refs = Reference.objects.all().order_by("id")
@@ -236,18 +246,18 @@ def new_reference(request):
     if request.method == 'POST':
         form = ReferenceForm(request.POST)
         if form.is_valid():
-                name = form.cleaned_data['name']
-                employment = form.cleaned_data['employment']
-                contact = form.cleaned_data['contact']
-                r = Reference(owner=request.user, name=name, employment=employment, contact=contact)
-                r.save()
-                if 'create_another' in request.POST:
-                    return HttpResponseRedirect('/resume/reference/new')
+            name = form.cleaned_data['name']
+            employment = form.cleaned_data['employment']
+            contact = form.cleaned_data['contact']
+            r = Reference(owner=request.user, name=name, employment=employment, contact=contact)
+            r.save()
+            if 'create_another' in request.POST:
+                return HttpResponseRedirect('/resume/reference/new')
+            else:
+                if request.session['isWizard']:
+                    return HttpResponseRedirect('/resume/applicant/new')
                 else:
-                    if request.session['isWizard'] == True:
-                        return HttpResponseRedirect('/resume/applicant/new')
-                    else:
-                        return HttpResponseRedirect('/resume/reference/')
+                    return HttpResponseRedirect('/resume/reference/')
     else:
         form = ReferenceForm()
 
@@ -257,7 +267,7 @@ class EmploymentListView(generic.ListView):
     model = Employment
     template_name = 'resume/employment/employment_list.html'
     context_object_name = 'employment_list'
-    
+
     def get_queryset(self):
         self.request.session['isWizard'] = False
         employments = Employment.objects.all().order_by("id")
@@ -267,32 +277,32 @@ def new_employment(request):
     if request.method == 'POST':
         form = EmploymentForm(request.POST)
         if form.is_valid():
-                company_name = form.cleaned_data['company_name']
-                job_title = form.cleaned_data['job_title']
-                start_date = form.cleaned_data['start_date']
-                end_date = form.cleaned_data['end_date']
-                leave_reason = form.cleaned_data['leave_reason']
-                duties = form.cleaned_data['duties']
-                projects = form.cleaned_data['projects']
-                e = Employment(
-                            owner=request.user,
-                            company_name=company_name, 
-                            job_title=job_title,
-                            start_date=start_date,
-                            end_date=end_date,
-                            leave_reason=leave_reason,
-                    )
-                e.save()
-                e.duties.set(duties)
-                e.projects.set(projects)
-                if 'create_another' in request.POST:
-                    return HttpResponseRedirect('/employment/new')
+            company_name = form.cleaned_data['company_name']
+            job_title = form.cleaned_data['job_title']
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+            leave_reason = form.cleaned_data['leave_reason']
+            duties = form.cleaned_data['duties']
+            projects = form.cleaned_data['projects']
+            e = Employment(
+                owner=request.user,
+                company_name=company_name,
+                job_title=job_title,
+                start_date=start_date,
+                end_date=end_date,
+                leave_reason=leave_reason,
+            )
+            e.save()
+            e.duties.set(duties)
+            e.projects.set(projects)
+            if 'create_another' in request.POST:
+                return HttpResponseRedirect('/employment/new')
+            else:
+                if request.session['isWizard']:
+                    return HttpResponseRedirect('/resume/reference/new')
                 else:
-                    if request.session['isWizard'] == True:
-                        return HttpResponseRedirect('/resume/reference/new')
-                    else:
-                        return HttpResponseRedirect('/resume/employment/')
-                
+                    return HttpResponseRedirect('/resume/employment/')
+
     else:
         form = EmploymentForm()
 
@@ -302,7 +312,7 @@ class ProjectListView(generic.ListView):
     model = Project
     template_name = 'resume/project/project_list.html'
     context_object_name = 'project_list'
-    
+
     def get_queryset(self):
         self.request.session['isWizard'] = False
         projects = Project.objects.all().order_by("id")
@@ -318,7 +328,7 @@ def new_project(request):
             if 'create_another' in request.POST:
                 return HttpResponseRedirect('/resume/project/new')
             else:
-                if request.session['isWizard'] == True:
+                if request.session['isWizard']:
                     return HttpResponseRedirect('/resume/education/new')
                 else:
                     return HttpResponseRedirect('/resume/project/')
@@ -329,8 +339,8 @@ def new_project(request):
 class DutyListView(generic.ListView):
     model = Duty
     template_name = 'resume/duty/duty_list.html'
-    context_object_name = 'duty_list'    
-    
+    context_object_name = 'duty_list'
+
     def get_queryset(self):
         self.request.session['isWizard'] = False
         duties = Duty.objects.all().order_by("id")
@@ -346,7 +356,7 @@ def new_duty(request):
             if 'create_another' in request.POST:
                 return HttpResponseRedirect('/resume/duty/new')
             else:
-                if request.session['isWizard'] == True:
+                if request.session['isWizard']:
                     return HttpResponseRedirect('/resume/project/new')
                 else:
                     return HttpResponseRedirect('/resume/duty/')
@@ -357,8 +367,8 @@ def new_duty(request):
 class TemplateListView(generic.ListView):
     model = Template
     template_name = 'resume/template/template_list.html'
-    context_object_name = 'template_list'    
-    
+    context_object_name = 'template_list'
+
     def get_queryset(self):
         self.request.session['isWizard'] = False
         templates = Template.objects.all().order_by("id")
@@ -376,7 +386,7 @@ def new_template(request):
                 filename = fs.save(upload_dir + file_ref.name, file_ref)
             t = Template(owner=request.user, name=name, file=filename)
             t.save()
-            if request.session['isWizard'] == True:
+            if request.session['isWizard']:
                 return HttpResponseRedirect('/resume/new')
             else:
                 return HttpResponseRedirect('/resume/template/')
@@ -388,7 +398,6 @@ def preview_template(request):
     resumes = Resume.objects.get().order_by("id")
     my_resume = resumes.filter(id=kwargs.get('pk'))
     my_template = my_resume.template
-    print("TEMPLATE: {0}".format(my_template))
     with open(my_template.file, 'r') as fp:
         data = fp.read()
     served_filename = 'test.docx'
@@ -411,274 +420,265 @@ class TemplatePreviewView(generic.DetailView):
         self.request.session['isWizard'] = True
         return Resume.objects.all()
 
-
 class DomainUpdateView(UpdateView):
-   model = Domain
-   form_class = DomainForm
-   template_name = 'resume/domain/domain_update_form.html'
+    model = Domain
+    form_class = DomainForm
+    template_name = 'resume/domain/domain_update_form.html'
 
-   def form_valid(self, form):
-      self.object = form.save(commit=False)
-      # Any manual settings go here
-      self.object.save()     
-      return HttpResponseRedirect('/resume/experience/')
-      #return HttpResponseRedirect(self.object.get_absolute_url())
-   
-   def dispatch(self, request, *args, **kwargs):
-     return super(DomainUpdateView, self).dispatch(request, *args, **kwargs)
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        # Any manual settings go here
+        self.object.save()
+        return HttpResponseRedirect('/resume/experience/')
+
+    def dispatch(self, request, *args, **kwargs):
+        return super(DomainUpdateView, self).dispatch(request, *args, **kwargs)
 
 class ExperienceUpdateView(UpdateView):
-   model = Experience
-   form_class = ExperienceForm
-   template_name = 'resume/xp/xp_update_form.html'
+    model = Experience
+    form_class = ExperienceForm
+    template_name = 'resume/xp/xp_update_form.html'
 
-   def form_valid(self, form):
-      self.object = form.save(commit=False)
-      # Any manual settings go here
-      self.object.save()
-      return HttpResponseRedirect('/resume/experience/')
-      #return HttpResponseRedirect(self.object.get_absolute_url())
-   
-   def dispatch(self, request, *args, **kwargs):
-     return super(ExperienceUpdateView, self).dispatch(request, *args, **kwargs)
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        # Any manual settings go here
+        self.object.save()
+        return HttpResponseRedirect('/resume/experience/')
+
+    def dispatch(self, request, *args, **kwargs):
+        return super(ExperienceUpdateView, self).dispatch(request, *args, **kwargs)
 
 class EducationUpdateView(UpdateView):
-   model = Education
-   form_class = EducationForm
-   template_name = 'resume/edu/edu_update_form.html'
+    model = Education
+    form_class = EducationForm
+    template_name = 'resume/edu/edu_update_form.html'
 
-   def form_valid(self, form):
-      self.object = form.save(commit=False)
-      # Any manual settings go here
-      self.object.save()
-      return HttpResponseRedirect('/resume/education/')
-      #return HttpResponseRedirect(self.object.get_absolute_url())
-   
-   def dispatch(self, request, *args, **kwargs):
-     return super(EducationUpdateView, self).dispatch(request, *args, **kwargs)
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        # Any manual settings go here
+        self.object.save()
+        return HttpResponseRedirect('/resume/education/')
+
+    def dispatch(self, request, *args, **kwargs):
+        return super(EducationUpdateView, self).dispatch(request, *args, **kwargs)
 
 class ReferenceUpdateView(UpdateView):
-   model = Reference
-   form_class = ReferenceForm
-   template_name = 'resume/ref/ref_update_form.html'
+    model = Reference
+    form_class = ReferenceForm
+    template_name = 'resume/ref/ref_update_form.html'
 
-   def form_valid(self, form):
-      self.object = form.save(commit=False)
-      # Any manual settings go here
-      self.object.save()
-      return HttpResponseRedirect('/resume/reference/')
-      #return HttpResponseRedirect(self.object.get_absolute_url())
-   
-   def dispatch(self, request, *args, **kwargs):
-     return super(ReferenceUpdateView, self).dispatch(request, *args, **kwargs)
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        # Any manual settings go here
+        self.object.save()
+        return HttpResponseRedirect('/resume/reference/')
+
+    def dispatch(self, request, *args, **kwargs):
+        return super(ReferenceUpdateView, self).dispatch(request, *args, **kwargs)
 
 class EmploymentUpdateView(UpdateView):
-   model = Employment
-   form_class = EmploymentForm
-   template_name = 'resume/employment/employment_update_form.html'
+    model = Employment
+    form_class = EmploymentForm
+    template_name = 'resume/employment/employment_update_form.html'
 
-   def form_valid(self, form):
-      self.object = form.save(commit=False)
-      # Any manual settings go here
-      self.object.save()
-      return HttpResponseRedirect('/resume/employment/')
-      #return HttpResponseRedirect(self.object.get_absolute_url())
-   
-   def dispatch(self, request, *args, **kwargs):
-     return super(EmploymentUpdateView, self).dispatch(request, *args, **kwargs)
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        # Any manual settings go here
+        self.object.save()
+        return HttpResponseRedirect('/resume/employment/')
+
+    def dispatch(self, request, *args, **kwargs):
+        return super(EmploymentUpdateView, self).dispatch(request, *args, **kwargs)
 
 class ProjectUpdateView(UpdateView):
-   model = Project
-   form_class = ProjectForm
-   template_name = 'resume/project/project_update_form.html'
+    model = Project
+    form_class = ProjectForm
+    template_name = 'resume/project/project_update_form.html'
 
-   def form_valid(self, form):
-      self.object = form.save(commit=False)
-      # Any manual settings go here
-      self.object.save()
-      return HttpResponseRedirect('/resume/project/')
-      #return HttpResponseRedirect(self.object.get_absolute_url())
-   
-   def dispatch(self, request, *args, **kwargs):
-     return super(ProjectUpdateView, self).dispatch(request, *args, **kwargs)
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        # Any manual settings go here
+        self.object.save()
+        return HttpResponseRedirect('/resume/project/')
+
+    def dispatch(self, request, *args, **kwargs):
+        return super(ProjectUpdateView, self).dispatch(request, *args, **kwargs)
 
 class DutyUpdateView(UpdateView):
-   model = Duty
-   form_class = DutyForm
-   template_name = 'resume/duty/duty_update_form.html'
+    model = Duty
+    form_class = DutyForm
+    template_name = 'resume/duty/duty_update_form.html'
 
-   def form_valid(self, form):
-      self.object = form.save(commit=False)
-      # Any manual settings go here
-      self.object.save()
-      return HttpResponseRedirect('/resume/duty/')
-      #return HttpResponseRedirect(self.object.get_absolute_url())
-   
-   def dispatch(self, request, *args, **kwargs):
-     return super(DutyUpdateView, self).dispatch(request, *args, **kwargs)
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        # Any manual settings go here
+        self.object.save()
+        return HttpResponseRedirect('/resume/duty/')
+
+    def dispatch(self, request, *args, **kwargs):
+        return super(DutyUpdateView, self).dispatch(request, *args, **kwargs)
 
 class ApplicantUpdateView(UpdateView):
-   model = Applicant
-   form_class = ApplicantForm
-   template_name = 'resume/applicant/app_update_form.html'
+    model = Applicant
+    form_class = ApplicantForm
+    template_name = 'resume/applicant/app_update_form.html'
 
-   def form_valid(self, form):
-      self.object = form.save(commit=False)
-      # Any manual settings go here
-      self.object.save()
-      return HttpResponseRedirect('/resume/applicant/')
-      #return HttpResponseRedirect(self.object.get_absolute_url())
-   
-   def dispatch(self, request, *args, **kwargs):
-     return super(ApplicantUpdateView, self).dispatch(request, *args, **kwargs)
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        # Any manual settings go here
+        self.object.save()
+        return HttpResponseRedirect('/resume/applicant/')
+        #return HttpResponseRedirect(self.object.get_absolute_url())
+
+    def dispatch(self, request, *args, **kwargs):
+        return super(ApplicantUpdateView, self).dispatch(request, *args, **kwargs)
 
 class ResumeUpdateView(UpdateView):
-   model = Resume
-   form_class = ResumeForm
-   template_name = 'resume/resume_update_form.html'
+    model = Resume
+    form_class = ResumeForm
+    template_name = 'resume/resume_update_form.html'
 
-   def form_valid(self, form):
-      self.object = form.save(commit=False)
-      # Any manual settings go here
-      self.object.save()
-      return HttpResponseRedirect('/resume/')
-      #return HttpResponseRedirect(self.object.get_absolute_url())
-   
-   def dispatch(self, request, *args, **kwargs):
-     return super(ResumeUpdateView, self).dispatch(request, *args, **kwargs)
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        # Any manual settings go here
+        self.object.save()
+        return HttpResponseRedirect('/resume/')
+
+    def dispatch(self, request, *args, **kwargs):
+        return super(ResumeUpdateView, self).dispatch(request, *args, **kwargs)
 
 class TemplateUpdateView(UpdateView):
-   model = Template
-   form_class = TemplateForm
-   template_name = 'resume/template/template_update_form.html'
+    model = Template
+    form_class = TemplateForm
+    template_name = 'resume/template/template_update_form.html'
 
-   def form_valid(self, form):
-      self.object = form.save(commit=False)
-      self.object.save()
-      return HttpResponseRedirect('/resume/template/')
-   
-   def dispatch(self, request, *args, **kwargs):
-     return super(ResumeUpdateView, self).dispatch(request, *args, **kwargs)
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.save()
+        return HttpResponseRedirect('/resume/template/')
+
+    def dispatch(self, request, *args, **kwargs):
+        return super(ResumeUpdateView, self).dispatch(request, *args, **kwargs)
 
 class DomainDeleteView(DeleteView):
-   model = Domain
+    model = Domain
 
-   def get_success_url(self):
-      return reverse('resume:domain')  
+    def get_success_url(self):
+        return reverse('resume:domain')
 
-   def dispatch(self, request, *args, **kwargs):
-      return super(DomainDeleteView, self).dispatch(request, *args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+        return super(DomainDeleteView, self).dispatch(request, *args, **kwargs)
 
-   def get(self, request, *args, **kwargs):
-      return self.post(request, *args, **kwargs)
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
 
 class ExperienceDeleteView(DeleteView):
-   model = Experience
+    model = Experience
 
-   def get_success_url(self):
-      return reverse('resume:xp')  
+    def get_success_url(self):
+        return reverse('resume:xp')
 
-   def dispatch(self, request, *args, **kwargs):
-      return super(ExperienceDeleteView, self).dispatch(request, *args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+        return super(ExperienceDeleteView, self).dispatch(request, *args, **kwargs)
 
-   def get(self, request, *args, **kwargs):
-      return self.post(request, *args, **kwargs)
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
 
 class ResumeDeleteView(DeleteView):
-   model = Resume
+    model = Resume
 
-   def get_success_url(self):
-      return reverse('resume:resumes')  
+    def get_success_url(self):
+        return reverse('resume:resumes')
 
-   def dispatch(self, request, *args, **kwargs):
-      return super(ResumeDeleteView, self).dispatch(request, *args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+        return super(ResumeDeleteView, self).dispatch(request, *args, **kwargs)
 
-   def get(self, request, *args, **kwargs):
-      return self.post(request, *args, **kwargs)
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
 
 class ApplicantDeleteView(DeleteView):
-   model = Applicant
+    model = Applicant
 
-   def get_success_url(self):
-      return reverse('resume:applicants')  
+    def get_success_url(self):
+        return reverse('resume:applicants')
 
-   def dispatch(self, request, *args, **kwargs):
-      return super(ApplicantDeleteView, self).dispatch(request, *args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+        return super(ApplicantDeleteView, self).dispatch(request, *args, **kwargs)
 
-   def get(self, request, *args, **kwargs):
-      return self.post(request, *args, **kwargs)
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
 
 class EmploymentDeleteView(DeleteView):
-   model = Employment
+    model = Employment
 
-   def get_success_url(self):
-      return reverse('resume:employments')  
+    def get_success_url(self):
+        return reverse('resume:employments')
 
-   def dispatch(self, request, *args, **kwargs):
-      return super(EmploymentDeleteView, self).dispatch(request, *args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+        return super(EmploymentDeleteView, self).dispatch(request, *args, **kwargs)
 
-   def get(self, request, *args, **kwargs):
-      return self.post(request, *args, **kwargs)
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
 
 class ReferenceDeleteView(DeleteView):
-   model = Reference
+    model = Reference
 
-   def get_success_url(self):
-      return reverse('resume:refs')  
+    def get_success_url(self):
+        return reverse('resume:refs')
 
-   def dispatch(self, request, *args, **kwargs):
-      return super(ReferenceDeleteView, self).dispatch(request, *args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+        return super(ReferenceDeleteView, self).dispatch(request, *args, **kwargs)
 
-   def get(self, request, *args, **kwargs):
-      return self.post(request, *args, **kwargs)
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
 
 class EducationDeleteView(DeleteView):
-   model = Education
+    model = Education
 
-   def get_success_url(self):
-      return reverse('resume:edus')  
+    def get_success_url(self):
+        return reverse('resume:edus')
 
-   def dispatch(self, request, *args, **kwargs):
-      return super(EducationDeleteView, self).dispatch(request, *args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+        return super(EducationDeleteView, self).dispatch(request, *args, **kwargs)
 
-   def get(self, request, *args, **kwargs):
-      return self.post(request, *args, **kwargs)
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
 
 class ProjectDeleteView(DeleteView):
-   model = Project
+    model = Project
 
-   def get_success_url(self):
-      return reverse('resume:projects')  
+    def get_success_url(self):
+        return reverse('resume:projects')
 
-   def dispatch(self, request, *args, **kwargs):
-      return super(ProjectDeleteView, self).dispatch(request, *args, **kwargs)      
+    def dispatch(self, request, *args, **kwargs):
+        return super(ProjectDeleteView, self).dispatch(request, *args, **kwargs)
 
-   def get(self, request, *args, **kwargs):
-      return self.post(request, *args, **kwargs)
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
 
 class DutyDeleteView(DeleteView):
-   model = Duty
+    model = Duty
 
-   def get_success_url(self):
-      return reverse('resume:duties')  
+    def get_success_url(self):
+        return reverse('resume:duties')
 
-   def dispatch(self, request, *args, **kwargs):
-      return super(DutyDeleteView, self).dispatch(request, *args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+        return super(DutyDeleteView, self).dispatch(request, *args, **kwargs)
 
-   def get(self, request, *args, **kwargs):
-      return self.post(request, *args, **kwargs)
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
 
 class TemplateDeleteView(DeleteView):
-   model = Template
+    model = Template
 
-   def get_success_url(self):
-      return reverse('resume:templates')  
+    def get_success_url(self):
+        return reverse('resume:templates')
 
-   def dispatch(self, request, *args, **kwargs):
-      return super(TemplateDeleteView, self).dispatch(request, *args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+        return super(TemplateDeleteView, self).dispatch(request, *args, **kwargs)
 
-   def get(self, request, *args, **kwargs):
-      return self.post(request, *args, **kwargs)
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
 
 def view_template(request, *args, **kwargs):
     template = Template.objects.get(pk=kwargs.get('pk'))
@@ -729,13 +729,13 @@ def create_resume_json(pk):
     employments = applicant.employment.all()
     for e in employments:
         employment_json = {
-                "company_name": e.company_name,
-                "job_title": e.job_title,
-                "start_date": e.start_date,
-                "start_date": e.end_date,
-                "duties": [],
-                "projects": [],
-            }
+            "company_name": e.company_name,
+            "job_title": e.job_title,
+            "start_date": e.start_date,
+            "end_date": e.end_date,
+            "duties": [],
+            "projects": [],
+        }
         for d in e.duties.all():
             employment_json['duties'].append(d.description)
 
@@ -771,7 +771,6 @@ def create_resume_json(pk):
             "employment": r.employment.company_name,
             "contact": r.contact,
         }
-        print(reference_json)
         resume_json['references'].append(reference_json)
     return resume_json
 
@@ -793,13 +792,13 @@ def signup(request):
             })
             to_email = form.cleaned_data.get('email')
             email = EmailMessage(
-                        mail_subject, message, to=[to_email]
+                mail_subject, message, to=[to_email]
             )
             email.send()
             return render(request, 'resume/acc/acc_confirm.html', {'form': form})
     else:
         form = SignupForm()
-    
+
     return render(request, 'resume/acc/signup.html', {'form': form})
 
 

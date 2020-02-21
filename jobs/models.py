@@ -1,8 +1,9 @@
-from django.db import models
 import uuid
+
+from django.db import models
 from django.conf import settings
+
 from resume.models import Resume
-from requests import get
 
 class JobSite(models.Model):
     url = models.CharField(max_length=100, default='', unique=True)
@@ -19,7 +20,6 @@ class JobSite(models.Model):
 class Job(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True)
     keywords = models.CharField(max_length=128, default='')
-    #job_site = models.ForeignKey(JobSite, on_delete=models.PROTECT)
     job_site = models.CharField(max_length=100, default='')
     title = models.CharField(max_length=100, default='')
     company = models.CharField(max_length=100, default='')
@@ -76,7 +76,12 @@ class Application(models.Model):
     ]
     create_date = models.DateTimeField(auto_now_add=True, editable=False)
     apply_date = models.DateTimeField()
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True
+    )
     job = models.ForeignKey(Job, on_delete=models.CASCADE, blank=True)
     status = models.CharField(choices=STATUS_CHOICES, max_length=12, default='')
     contact = models.CharField(max_length=100, default='')
@@ -106,8 +111,18 @@ class Interview(models.Model):
         (SCHEDULED, "SCHEDULED"),
         (COMPLETED, "COMPLETED")
     ]
-    owner = models.ForeignKey('auth.User', related_name='interview_owner', on_delete=models.PROTECT, blank=True, null=True)
-    application = models.ForeignKey('Application', related_name='application', on_delete=models.PROTECT)
+    owner = models.ForeignKey(
+        'auth.User',
+        related_name='interview_owner',
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True
+    )
+    application = models.ForeignKey(
+        'Application',
+        related_name='application',
+        on_delete=models.PROTECT
+    )
     date = models.DateTimeField()
     type = models.CharField(max_length=100, choices=TYPE, default='')
     contact = models.CharField(max_length=100, default='')
