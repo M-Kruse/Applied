@@ -54,25 +54,6 @@ class HTMLView(generic.ListView):
         context['applicant'] = Applicant.objects.get(pk=resume.applicant.id)
         return context
 
-class JSONResponseMixin:
-
-    def render_to_json_response(self, context, **response_kwargs):
-
-        return JsonResponse(
-            self.get_data(context),
-            **response_kwargs
-        )
-
-    def get_data(self, context):
-        return context
-
-class JSONView(JSONResponseMixin, TemplateView):
-
-    def render_to_response(self, context, **response_kwargs):
-        return self.render_to_json_response(
-            create_resume_json(self.kwargs.get('pk')), **response_kwargs
-        )
-
 class ResumeListView(generic.ListView):
     model = Resume
     template_name = 'resume/resume_list.html'

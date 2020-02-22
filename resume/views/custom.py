@@ -1,6 +1,7 @@
 import os
 
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.views.generic import TemplateView
 
 from resume.models import (Employment, Applicant, Experience,
                      Education, Resume, Domain, Reference,
@@ -50,7 +51,25 @@ def build_resume_from_docx_template(request, *args, **kwargs):
     response['Content-Disposition'] = 'attachment; filename="{0}"'.format(filename)
     return response
 
+class JSONResponseMixin:
 
+    def render_to_json_response(self, context, **response_kwargs):
+
+        return JsonResponse(
+            self.get_data(context),
+            **response_kwargs
+        )
+
+    def get_data(self, context):
+        return context
+
+class JSONView(JSONResponseMixin, TemplateView):
+
+    def render_to_response(self, context, **response_kwargs):
+        return self.render_to_json_response(
+            create_resume_json(self.kwargs.get('pk')), **response_kwargs
+        )
+       
 def create_resume_json(pk):
     resume = Resume.objects.get(pk=pk)
     applicant = Applicant.objects.get(pk=resume.applicant.id)

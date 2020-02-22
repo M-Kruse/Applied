@@ -8,6 +8,7 @@ from resume.forms import (ResumeForm, ApplicantForm, DomainForm,
                     ExperienceForm, EducationForm, ReferenceForm,
                     EmploymentForm, ProjectForm, DutyForm, TemplateForm)
 
+from django.http import HttpResponseRedirect
 
 class DomainUpdateView(UpdateView):
     model = Domain
