@@ -48,7 +48,7 @@ Now you should be able to log in from http://127.0.0.1:8000/
 The jobs API endpoint is functional so that a web scraper can send jobs to it. You can manually curl for testing
 
 ```
-curl --user rusty:supersecret -d '{"source_site":"example.com","title":"Button Smasher","company":"Foo Corp","location":"Foo, USA","date_posted":"2 days ago","url":"https://example.com/job/1234"}' -H "Content-Type: application/json" http://localhost:8000/api/jobs/
+curl --user rusty:supersecret -d '{"source_site":"example.com",\"title":"Button Smasher","company":"Foo Corp","location":"Foo, USA","date_posted":"2 days ago","url":"https://example.com/", "description":{"text":"SUPER LONG TEXT DESCRIPTION"}}' -H "Content-Type: application/json" http://localhost:8000/api/jobs/
 ```
 
 ## Running the tests
@@ -70,5 +70,6 @@ TODO
 ## Authors
 
 * **Matthew Kruse** - *Initial work* - [M-Kruse](https://github.com/M-Kruse)
+
 
 See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.

@@ -1,12 +1,11 @@
 {% extends 'adminlte/base.html' %}
-{% block title %}Applied{% endblock %}
 
 {% block content %}
-<body class=" app-viewer model-applicant">
-  <div id="container">  
-    <div id="content" class="colM"> 
-        <h4>Create New Project</h4>
-        <div id="content-main">
+<div class="col-md-6">
+<div class="card card-primary">
+      <div class="card-header">
+          <h4>Create New Project</h4>
+            <div id="container">  
           <ul>
             <p>A Project briefely describes a team or personal project that you worked on at an employment.</p>
             <br>
@@ -19,28 +18,32 @@
                 <li>Reorganized computer lab</li>
             </ul>
             </ul>
-			<form action="" method="post">
-    			{% csrf_token %}
-    				<fieldset class="module aligned ">
-    					{% for field in form  %}
-		      				<div class="form-row">
-			      				<div class="col-sm-6">
-			        				<b>{{ field.label }}</b>: {{ field }}
-			      				</div>
-		  					</div>
-   						{% endfor %}
-			   		</fieldset>
+                <form action="" method="post">
+          {% csrf_token %}
+            
+              {% for field in form  %}
+              <div class="card-body">
+                  <div class="form-row">
+                    <div class="col-sm-6">
+                      <b>{{ field.label_tag }}</b>
+                      <fieldset class="module aligned "> {{ field }} </fieldset>
+                    </div>
+              </div>
+          </div>
+              </fieldset>
+              {% endfor %}
+
+            <br>
             <input type="submit" class="btn btn-primary" name="create" value="Create">
-            <input type="submit" class="btn btn-primary" name="create_another" value="Create And Add Another">				
-   			</form>
-   		</div>
-   		<br class="clear">
-   </div>
+            <input type="submit" class="btn btn-primary" name="create_another" value="Create And Add Another">
+            
 </div>
-<div id="content" class="colM">	
-</body>
+</form>
+</div>
 
 {% endblock %}
 
+
+        
 
         
