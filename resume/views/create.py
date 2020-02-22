@@ -11,8 +11,6 @@ from resume.forms import (ResumeForm, ApplicantForm, DomainForm,
                     ExperienceForm, EducationForm, ReferenceForm,
                     EmploymentForm, ProjectForm, DutyForm, TemplateForm)
 
-import remote_pdb
-
 def new_experience(request):
     if request.method == 'POST':
         form = ExperienceForm(request.POST)
@@ -148,7 +146,6 @@ def new_template(request):
     upload_dir = "uploads/"
     if request.method == 'POST':
         form = TemplateForm(request.POST, request.FILES)
-        #remote_pdb.set_trace(host='0.0.0.0', port=4444)
         if form.is_valid():
             name = form.cleaned_data['name']
             for filename, file in request.FILES.items():
