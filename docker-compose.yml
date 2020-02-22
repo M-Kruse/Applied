@@ -10,5 +10,8 @@ services:
       - .:/code
     ports:
       - "8000:8000"
+      - "4444:4444"
     depends_on:
       - db
+    stdin_open: true
+    tty: true

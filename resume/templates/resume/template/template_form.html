@@ -6,24 +6,20 @@
       <div class="card-header">
           <h4>Upload New Template</h4>
             <div id="container"> 
-      <form action="" method="post">
-          {% csrf_token %}            
+            <form action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}            
               {% for field in form  %}
                   <div class="form-group">
                     <div class="col-sm-6">
                       <b>{{ field.label_tag }}</b> - 
-                      {{ field }}
-                          <fieldset class="module aligned ">{{ formset.non_field_errors }}</fieldset>
-                          {{ formset.errors }}
+                      
+                          <fieldset class="module aligned ">{{ field }} </fieldset>
                     </div>
                 </div>
               {% endfor %}
-            </fieldset>
             <input type="submit" class="btn btn-primary" value="Create">
-          {{ form.errors }}      
         </form>
         <br>
-</div>
 </div>
 </div>
 </div>
