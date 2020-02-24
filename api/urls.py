@@ -4,7 +4,7 @@ from api import views
 
 # Create a router and register our viewsets with it.
 router = DefaultRouter()
-router.register(r'jobs', views.JobViewSet)
+router.register(r'jobs', views.JobViewSet, basename='jobs')
 router.register(r'sites', views.JobSiteViewSet)
 router.register(r'aggregators', views.AggregatorViewSet)
 router.register(r'applications', views.ApplicationViewSet)
