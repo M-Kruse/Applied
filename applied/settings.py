@@ -29,7 +29,6 @@ ALLOWED_HOSTS = []
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 PROJECT_DIR = os.path.join(PROJECT_ROOT, '/applied')
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -127,11 +126,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-
-STATIC_ROOT = os.path.join(PROJECT_ROOT,'staticfiles/')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
-    os.path.join(PROJECT_DIR,'static/'),
+    os.path.join(PROJECT_ROOT,'static'),
 )
 
 REST_FRAMEWORK = {
@@ -154,3 +151,8 @@ EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 EMAIL_PORT = 587
 
+
+print("PROJECT_ROOT:{0}".format(PROJECT_ROOT))
+print("PROJECT_DIR:{0}".format(PROJECT_ROOT))
+#print("STATIC_ROOT:{0}".format(STATIC_ROOT))
+print(STATICFILES_DIRS)
