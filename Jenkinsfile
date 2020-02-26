@@ -16,6 +16,6 @@ python manage.py collectstatic'''
 
   }
   environment {
-    HOME = ${env.WORKSPACE}
+    HOME = "${env.WORKSPACE}"
   }
 }
