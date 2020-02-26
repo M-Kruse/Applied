@@ -19,6 +19,6 @@ pipeline {
 
   }
   environment {
-    PATH = '${PATH}:/.local/bin'
+    PATH = "$PATH:/.local/bin"
   }
 }
