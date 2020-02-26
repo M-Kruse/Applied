@@ -11,8 +11,7 @@ pipeline {
       steps {
         withEnv(overrides: ["HOME=${env.WORKSPACE}"]) {
           sh '''pip install -r requirements.txt
-mkdir static
- python manage.py collectstatic'''
+python manage.py collectstatic --noinput '''
         }
 
       }
