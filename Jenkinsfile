@@ -16,6 +16,12 @@ pipeline {
       }
     }
 
+    stage('Test') {
+      steps {
+        sh 'python manage.py test'
+      }
+    }
+
   }
   environment {
     PATH = "$PATH:/.local/bin"
