@@ -1,8 +1,8 @@
 pipeline {
   agent {
     docker {
-      args '-p 3000:3000 '
       image 'python:3'
+      args '-p 3000:3000 '
     }
 
   }
@@ -17,5 +17,8 @@ pipeline {
       }
     }
 
+  }
+  environment {
+    PATH = '${PATH}:/.local/bin'
   }
 }
