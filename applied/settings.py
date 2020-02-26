@@ -126,7 +126,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
+#This is where the static files are downloaded with collecstatic.
+STATIC_ROOT = os.path.join(BASE_DIR,'static')
+
+#This is the string used for referencing the staticfiles directory collection, its like a namespace. 
 STATIC_URL = '/static/'
+
+#This is for the locations that django wills can for static files, one is required. 
+#It will pick the first match found
 STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT,'static'),
 )
@@ -152,7 +159,7 @@ EMAIL_HOST_PASSWORD = ''
 EMAIL_PORT = 587
 
 
-print("PROJECT_ROOT:{0}".format(PROJECT_ROOT))
-print("PROJECT_DIR:{0}".format(PROJECT_ROOT))
-#print("STATIC_ROOT:{0}".format(STATIC_ROOT))
+#print("PROJECT_ROOT:{0}".format(PROJECT_ROOT))
+#print("PROJECT_DIR:{0}".format(PROJECT_ROOT))
+print("STATIC_ROOT:{0}".format(STATIC_ROOT))
 print(STATICFILES_DIRS)
