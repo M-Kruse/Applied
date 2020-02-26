@@ -10,8 +10,7 @@ pipeline {
     stage('Build') {
       steps {
         withEnv(overrides: ["HOME=${env.WORKSPACE}"]) {
-          sh '''pip install -r requirements.txt
-python manage.py collectstatic --noinput '''
+          sh 'pip install -r requirements.txt'
         }
 
       }
