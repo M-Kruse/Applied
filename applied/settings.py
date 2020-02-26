@@ -127,15 +127,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 #This is where the static files are downloaded with collecstatic.
-STATIC_ROOT = os.path.join(BASE_DIR,'static')
+STATIC_ROOT = os.path.join(BASE_DIR,'/static/')
 
 #This is the string used for referencing the staticfiles directory collection, its like a namespace. 
 STATIC_URL = '/static/'
 
-#This is for the locations that django wills can for static files, one is required. 
+#This is for extra locations that django will scan for static files, it has to be defined but can be left empty
 #It will pick the first match found
 STATICFILES_DIRS = (
-    os.path.join(PROJECT_ROOT,'static'),
+    os.path.join(BASE_DIR,'static/applied'),
 )
 
 REST_FRAMEWORK = {
