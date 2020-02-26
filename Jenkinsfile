@@ -15,4 +15,7 @@ python manage.py collectstatic'''
     }
 
   }
+  environment {
+    HOME = '${env.WORKSPACE}"'
+  }
 }
