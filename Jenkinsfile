@@ -9,15 +9,13 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        withEnv(["HOME=${env.WORKSPACE}"]) {
+        withEnv(overrides: ["HOME=${env.WORKSPACE}"]) {
           sh '''pip install -r requirements.txt
  python manage.py collectstatic'''
         }
+
       }
     }
 
-  }
-  environment {
-    HOME = "${env.WORKSPACE}"
   }
 }
