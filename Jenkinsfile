@@ -2,7 +2,7 @@ pipeline {
   agent {
     docker {
       args '-p 3000:3000 '
-      image 'django-dev'
+      image 'python:3'
     }
 
   }
@@ -10,11 +10,11 @@ pipeline {
     stage('Build') {
       steps {
         withEnv(overrides: ["HOME=${env.WORKSPACE}"]) {
-          sh '''  virtualenv env
-source env/bin/activate
-pip install -r requirements.txt'''
+          sh 'apk add virtualenv'
+          sh 'virtualenv applied'
+          sh '. env/bin/activate'
+          sh 'pip install -r requirements.txt'
         }
-
       }
     }
 
