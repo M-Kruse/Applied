@@ -10,11 +10,12 @@ pipeline {
     stage('Build') {
       steps {
         withEnv(overrides: ["HOME=${env.WORKSPACE}"]) {
-          sh 'apk add virtualenv'
+          sh 'sudo apt-get install virtualenv'
           sh 'virtualenv applied'
           sh '. env/bin/activate'
           sh 'pip install -r requirements.txt'
         }
+
       }
     }
 
