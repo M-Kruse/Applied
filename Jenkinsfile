@@ -1,7 +1,7 @@
 pipeline {
   agent {
     dockerfile {
-      filename 'Applied.Dockerfile'
+      filename 'Dockerfile'
     }
 
   }
