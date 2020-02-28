@@ -2,9 +2,12 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from api import views
 
+#App namespace
+app_name = 'api'
+
 # Create a router and register our viewsets with it.
 router = DefaultRouter()
-router.register(r'jobs', views.JobViewSet, basename='jobs')
+router.register(r'jobs', views.JobViewSet, 'jobs')
 router.register(r'sites', views.JobSiteViewSet)
 router.register(r'aggregators', views.AggregatorViewSet)
 router.register(r'applications', views.ApplicationViewSet)
