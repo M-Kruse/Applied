@@ -29,7 +29,6 @@ ALLOWED_HOSTS = []
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 PROJECT_DIR = os.path.join(PROJECT_ROOT, '/applied')
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -127,12 +126,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
+#This is where the static files are downloaded with collecstatic.
+STATIC_ROOT = os.path.join(BASE_DIR,'/static/')
 
-STATIC_ROOT = os.path.join(PROJECT_ROOT,'staticfiles/')
+#This is the string used for referencing the staticfiles directory collection, its like a namespace. 
 STATIC_URL = '/static/'
+
+#This is for extra locations that django will scan for static files, it has to be defined but can be left empty
+#It will pick the first match found
 STATICFILES_DIRS = (
-    "/code/static/",
-    os.path.join(PROJECT_DIR,'static/'),
+    os.path.join(BASE_DIR,'static/applied'),
 )
 
 REST_FRAMEWORK = {
@@ -154,4 +157,3 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 EMAIL_PORT = 587
-
