@@ -10,7 +10,9 @@ pipeline {
     stage('Build') {
       steps {
         withEnv(overrides: ["HOME=${env.WORKSPACE}"]) {
-          sh 'pip install -r requirements.txt'
+          sh '''  virtualenv env
+source env/bin/activate
+pip install -r requirements.txt'''
         }
 
       }
