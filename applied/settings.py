@@ -157,9 +157,3 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 EMAIL_PORT = 587
-
-
-#print("PROJECT_ROOT:{0}".format(PROJECT_ROOT))
-#print("PROJECT_DIR:{0}".format(PROJECT_ROOT))
-print("STATIC_ROOT:{0}".format(STATIC_ROOT))
-print(STATICFILES_DIRS)
