@@ -110,6 +110,32 @@ class Template(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     name = models.CharField(max_length=64, blank=False, unique=True)
     file = models.FileField(upload_to='uploads/')
+    TEMPLATE_TYPES = [('R', 'Resume'), ('C', 'Cover Letter')]
+    type = models.CharField(
+        max_length=64,
+        blank=False,
+        choices=TEMPLATE_TYPES,
+        default='RESUME'
+    )
 
     def __str__(self):
         return self.name
+
+class CoverLetter(models.Model):
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    name = models.CharField(max_length=64, blank=False, unique=True)
+    HTML = 'HTML'
+    JSON = 'JSON'
+    DOCX = 'DOCX'
+    PDF = 'PDF'
+    FORMATS = [(HTML, HTML), (JSON, JSON), (DOCX, DOCX), (PDF, PDF)]
+    output_format = models.CharField(
+        max_length=64,
+        blank=False,
+        choices=FORMATS,
+        default=JSON
+    )
+    applicant = models.ForeignKey('Applicant', on_delete=models.CASCADE)
+    create_date = models.DateField(editable=False, auto_now_add=True, blank=True)
+    edit_date = models.DateField(editable=False, auto_now_add=True, blank=True)
+    template = models.ForeignKey('Template', on_delete=models.CASCADE)

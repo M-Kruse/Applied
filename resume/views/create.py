@@ -224,8 +224,33 @@ def new_resume(request):
             )
             r.save()
             if request.session['isWizard']:
-                request.session['isWizard'] = False
-            return HttpResponseRedirect('/resume/')
+                return HttpResponseRedirect('/resume/template/new')
+            else:
+                return HttpResponseRedirect('/resume/')
+    else:
+        form = ResumeForm()
+    return render(request, 'resume/resume_form.html', {'form': form})
+
+def new_cover_letter(request):
+    if request.method == 'POST':
+        form = CoverLetterForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            summary = form.cleaned_data['summary']
+            applicant = form.cleaned_data['applicant']
+            output_format = form.cleaned_data['output_format']
+            template = form.cleaned_data['template']
+            #style = form.cleaned_data['style']
+            r = CoverLetter(
+                owner=request.user,
+                name=name,
+                applicant=applicant,
+                output_format=output_format,
+                template=template
+            )
+            r.save()
+            if request.session['isWizard']:
+                return HttpResponseRedirect('/resume/')
     else:
         form = ResumeForm()
     return render(request, 'resume/resume_form.html', {'form': form})

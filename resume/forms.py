@@ -71,7 +71,7 @@ class DutyForm(ModelForm):
 class TemplateForm(ModelForm):
     class Meta:
         model = Template
-        fields = ['name', 'file']
+        fields = ['name', 'type', 'file']
 
 class SignupForm(UserCreationForm):
     email = forms.EmailField(max_length=200, help_text='Required')
