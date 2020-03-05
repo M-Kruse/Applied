@@ -1,0 +1,38 @@
+{% extends 'adminlte/base.html' %}
+
+{% block content %}
+<div class="col-md-6">
+<div class="card card-primary">
+      <div class="card-header">
+        <h3 class="card-title">Create New Cover Letter</h3>
+      </div>
+	<div id="container">	
+    <br>
+		<div id="content" class="colM">	
+			<form action="" method="post">
+    			{% csrf_token %}
+    				<fieldset class="module aligned ">
+    					{% for field in form  %}
+		      				<div class="form-group">
+			      				<div class="col-sm-6">
+			        				<b>{{ field.label_tag }}</b> - {{ field }}
+			      				</div>
+		  					</div>
+                    {{ form.subject.errors }}
+    {{ form.subject.label_tag }}
+    {{ form.subject }}
+   						{% endfor %}
+			   		</fieldset>
+   					<input type="submit" class="btn btn-primary" value="Create">
+   				<div class="fieldWrapper">
+
+</div>
+   			</form>
+        <br>
+</div>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}
+

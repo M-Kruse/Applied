@@ -5,7 +5,7 @@ from django import forms
 
 from resume.models import (Employment, Applicant, Experience,
                            Education, Resume, Domain, Reference,
-                           Project, Duty, Template)
+                           Project, Duty, Template, CoverLetter)
 
 class ResumeForm(ModelForm):
     class Meta:
@@ -71,10 +71,21 @@ class DutyForm(ModelForm):
 class TemplateForm(ModelForm):
     class Meta:
         model = Template
-        fields = ['name', 'file']
+        fields = ['name', 'type', 'file']
 
 class SignupForm(UserCreationForm):
     email = forms.EmailField(max_length=200, help_text='Required')
     class Meta:
         model = User
         fields = ('username', 'email', 'password1', 'password2')
+
+class CoverLetterForm(ModelForm):
+    class Meta:
+        model = CoverLetter
+        fields = [
+            'name',
+            'applicant',
+            'summary',
+            'template',
+            'output_format'
+        ]

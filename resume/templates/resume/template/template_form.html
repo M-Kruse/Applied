@@ -3,21 +3,35 @@
 {% block content %}
 <div class="col-md-6">
 <div class="card card-primary">
-      <div class="card-header">
-          <h4>Upload New Template</h4>
-            <div id="container"> 
-            <form action="" method="post" enctype="multipart/form-data">
-            {% csrf_token %}            
-              {% for field in form  %}
-                  <div class="form-group">
-                    <div class="col-sm-6">
-                      <b>{{ field.label_tag }}</b> - 
-                      
-                          <fieldset class="module aligned ">{{ field }} </fieldset>
-                    </div>
-                </div>
-              {% endfor %}
-            <input type="submit" class="btn btn-primary" value="Create">
+  <div class="card-header">
+    <h4>Upload New Template</h4>
+      <div id="container"> 
+        <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+          <div class="col-sm-6">
+            <b><label for="id_name">Name:</label></b>
+            <fieldset class="module aligned ">
+              <input type="text" name="name" maxlength="64" required="" id="id_name">
+            </fieldset>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-6">
+            <b><label for="id_type">Type:</label></b>
+              <fieldset class="module aligned "><select name="type" id="id_type">
+                {% if form.type == "Resume" %}
+                  <option selected value="R">Resume</option>
+                  <option value="C">Cover Letter</option>
+                {% else %}
+                  <option value="R">Resume</option>
+                  <option selected value="C">Cover Letter</option>
+                {% endif %}
+                </select> 
+              </fieldset>
+            </div>
+          </div>
+          <input type="submit" class="btn btn-primary" value="Create">
         </form>
         <br>
 </div>
@@ -25,4 +39,3 @@
 </div>
 </div>
 {% endblock %}
-    

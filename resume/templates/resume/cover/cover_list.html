@@ -1,0 +1,49 @@
+{% extends 'adminlte/base.html' %}
+{% block title %}Applied{% endblock %}
+
+	{% if cover_list %}
+		{% block content %}
+		<div class="p-3 mb-2 text-dark">
+		<table class="table" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;">
+			  <thead>
+			    <tr>
+			      <th scope="col">#</th>
+			      <th scope="col">Name</th>
+			      <th scope="col">Applicant</th>
+			      <th scope="col">Output Format</th>
+			      <th scope="col">Template</th>
+			      <th scope="col">Summary</th>
+			      <th scope="col">Actions</th>
+			    </tr>
+			</thead>
+        	<tbody>
+			{% for c in cover_list %}
+			        <tr>
+			        	<th scope="row"> {{ forloop.counter }} </th>
+			        	<td>{{ c.name }}</td>
+			        	<td>{{ c.applicant }}</td>
+			        	<td>{{ c.output_format }}</td>
+			        	<td>{{ c.template }}</td>
+			        	<td>{{ c.summary }}</td>
+			        	<td>
+							<a href="/resume/cover/edit/{{ c.id }}"><button type="button" class="btn btn-primary">Edit</button></a>
+        <button data-toggle="modal" data-target="#modal-delete-cover-{{ c.id }}" type="button" class="btn btn-danger ">Delete</button>
+						 </td>
+					</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<div id="content" class="colM">	
+		<div id="content-main">
+			<a href="/resume/cover/new"><button class="btn btn-primary">Create New Cover Letter</button></a>
+		</div>
+	</div>
+</div>
+{% for c in cover_list %}
+  {% include 'resume/cover/cover_delete.html' %}
+{% endfor %}
+	
+		{% endblock %}
+	{% endif %}
+
+

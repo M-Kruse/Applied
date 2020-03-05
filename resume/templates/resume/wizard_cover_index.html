@@ -1,0 +1,34 @@
+
+
+{% extends 'adminlte/base.html' %}
+
+{% block content %}
+<div class="col-md-6">
+<div class="card card-primary">
+      <div class="card-header">
+        <h3>New Cover Letter Wizard</h3>
+      </div>
+  <div id="container">  
+    <br>
+      <div class="card-header">
+    <div id="content" class="colM"> 
+      <p>If you would like to create a new Cover Letter, click Create. Otherwise you may skip and finish the wizard.
+      <div class="container">
+              The cover letter is a brief summary which may include
+        <ul>
+        </ul>
+        <li>How you came to be aware of the job opening</li>
+        <li>Summary that may or may not include highlight of top skills, hopefully relevant to the job you are applying to.</li>
+        <li>Why you fit the position (requirements/company/field) </li>
+        <li>Finish with something professional like you would a work email </li>
+       <ul>
+</ul> 
+</div>
+            
+      <a href="/resume/domain/new"><button type="button" class="btn btn-primary">Start Wizard</button></a>
+      <a href="/resume/"><button type="button" class="btn btn-primary">Skip</button></a>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}

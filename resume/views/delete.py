@@ -3,7 +3,7 @@ from django.views.generic import DeleteView
 
 from resume.models import (Employment, Applicant, Experience,
                      Education, Resume, Domain, Reference,
-                     Project, Duty, Template)
+                     Project, Duty, Template, CoverLetter)
 
 class DomainDeleteView(DeleteView):
     model = Domain
@@ -121,6 +121,18 @@ class TemplateDeleteView(DeleteView):
 
     def dispatch(self, request, *args, **kwargs):
         return super(TemplateDeleteView, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
+
+class CoverLetterDeleteView(DeleteView):
+    model = CoverLetter
+
+    def get_success_url(self):
+        return reverse('resume:covers')
+
+    def dispatch(self, request, *args, **kwargs):
+        return super(CoverLetterDeleteView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)

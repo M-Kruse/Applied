@@ -231,6 +231,26 @@ urlpatterns = [
         login_required(view_template),
         name='previewTemplate'
     ),
+        path(
+        'cover/',
+        login_required(CoverLetterView.as_view()),
+        name='covers'
+    ),
+    path(
+        'cover/new',
+        login_required(new_cover_letter),
+        name='newCoverLetter'
+    ),
+    path(
+        'cover/edit/<int:pk>',
+        login_required(CoverLetterUpdateView.as_view()),
+        name='updateCoverLetter'
+    ),
+    path(
+        'cover/delete/<int:pk>',
+        login_required(CoverLetterDeleteView.as_view()),
+        name='deleteCoverLetter'
+    ),
     url(
         r'^signup/$',
         signup,
