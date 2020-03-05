@@ -2,11 +2,12 @@ from django.views.generic import UpdateView
 
 from resume.models import (Employment, Applicant, Experience,
                      Education, Resume, Domain, Reference,
-                     Project, Duty, Template)
+                     Project, Duty, Template, CoverLetter)
 
 from resume.forms import (ResumeForm, ApplicantForm, DomainForm,
                     ExperienceForm, EducationForm, ReferenceForm,
-                    EmploymentForm, ProjectForm, DutyForm, TemplateForm)
+                    EmploymentForm, ProjectForm, DutyForm, TemplateForm,
+                    CoverLetterForm)
 
 from django.http import HttpResponseRedirect
 
@@ -149,3 +150,16 @@ class TemplateUpdateView(UpdateView):
 
     def dispatch(self, request, *args, **kwargs):
         return super(ResumeUpdateView, self).dispatch(request, *args, **kwargs)
+
+class CoverLetterUpdateView(UpdateView):
+    model = CoverLetter
+    form_class = CoverLetterForm
+    template_name = 'resume/cover/cover_update_form.html'
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.save()
+        return HttpResponseRedirect('/resume/cover/')
+
+    def dispatch(self, request, *args, **kwargs):
+        return super(CoverLetterUpdateView, self).dispatch(request, *args, **kwargs)

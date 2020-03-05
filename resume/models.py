@@ -139,3 +139,4 @@ class CoverLetter(models.Model):
     create_date = models.DateField(editable=False, auto_now_add=True, blank=True)
     edit_date = models.DateField(editable=False, auto_now_add=True, blank=True)
     template = models.ForeignKey('Template', on_delete=models.CASCADE)
+    summary = models.TextField()

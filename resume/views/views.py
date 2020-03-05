@@ -21,11 +21,12 @@ from resume.tokens import account_activation_token
 
 from resume.models import (Employment, Applicant, Experience,
                      Education, Resume, Domain, Reference,
-                     Project, Duty, Template)
+                     Project, Duty, Template, CoverLetter)
 
 from resume.forms import (ResumeForm, ApplicantForm, DomainForm,
                     ExperienceForm, EducationForm, ReferenceForm,
-                    EmploymentForm, ProjectForm, DutyForm, TemplateForm)
+                    EmploymentForm, ProjectForm, DutyForm, TemplateForm,
+                    CoverLetterForm)
 
 from resume.forms import SignupForm
 
@@ -164,5 +165,15 @@ class TemplatePreviewView(generic.DetailView):
     template_name = 'resume/wizard_index.html'
 
     def get_queryset(self):
-        self.request.session['isWizard'] = True
+        self.request.session['isWizard'] = False
         return Resume.objects.all()
+
+class CoverLetterView(generic.ListView):
+    model = CoverLetter
+    template_name = 'resume/cover/cover_list.html'
+    context_object_name = 'cover_list'
+
+    def get_queryset(self):
+        self.request.session['isWizard'] = False
+        covers = CoverLetter.objects.all().order_by("id")
+        return covers.filter(owner=self.request.user)

@@ -5,11 +5,12 @@ from django.core.files.storage import FileSystemStorage
 
 from resume.models import (Employment, Applicant, Experience,
                      Education, Resume, Domain, Reference,
-                     Project, Duty, Template)
+                     Project, Duty, Template, CoverLetter)
 
 from resume.forms import (ResumeForm, ApplicantForm, DomainForm,
                     ExperienceForm, EducationForm, ReferenceForm,
-                    EmploymentForm, ProjectForm, DutyForm, TemplateForm)
+                    EmploymentForm, ProjectForm, DutyForm, TemplateForm,
+                    CoverLetterForm)
 
 def new_experience(request):
     if request.method == 'POST':
@@ -155,12 +156,19 @@ def new_template(request):
             t = Template(owner=request.user, name=name, file=filename)
             t.save()
             if request.session['isWizard']:
-                return HttpResponseRedirect('/resume/new')
+                if '/resume/new' in request.META['HTTP_REFERER']:
+                    return HttpResponseRedirect('/resume/cover/new')
+                else:
+                    return HttpResponseRedirect('/resume/new')
             else:
                 return HttpResponseRedirect('/resume/template/')
     else:
         form = TemplateForm()
-    return render(request, 'resume/template/template_form.html', {'form': form})
+    if '/resume/template/new' in request.META['HTTP_REFERER']:
+        template_type = 'Cover Letter'
+    else:
+        template_type = 'Resume'
+    return render(request, 'resume/template/template_form.html', {'form': form, 'type': template_type})
 
 def new_project(request):
     if request.method == 'POST':
@@ -246,11 +254,15 @@ def new_cover_letter(request):
                 name=name,
                 applicant=applicant,
                 output_format=output_format,
-                template=template
+                template=template,
+                summary=summary
             )
             r.save()
             if request.session['isWizard']:
+                request.session['isWizard'] = False
                 return HttpResponseRedirect('/resume/')
+            else:
+                return HttpResponseRedirect('/resume/cover')
     else:
-        form = ResumeForm()
-    return render(request, 'resume/resume_form.html', {'form': form})
+        form = CoverLetterForm()
+    return render(request, 'resume/cover/cover_form.html', {'form': form})
